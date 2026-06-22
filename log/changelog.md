@@ -99,6 +99,23 @@ timestamp: 2026-06-21T18:15:00Z
 |- References changed from "Q1900M iLO box" to "q1900" / "q1900m"
 |- Memory and docs updated accordingly
 
+## 2026-06-22
+
+### DL360 Gen9 — Initial Setup
+- Server racked, powered on, connected to network
+- HP Smart Array P440ar — RAID logical drive created (64K strip, read-ahead, write-back with BBU)
+- Hostname set to `pve2.lan`, IP 192.168.12.50 planned
+- Proxmox VE 8 install pending (Ventoy USB)
+
+### 40G Networking — Mellanox ConnectX-3 Pro
+- Installed in main PVE server, detected at PCI 04:00.0 as `eno49d1`
+- DL360 will get matching card for inter-server 40G link
+
+### LXC 103 (richai-web) — Permanent DNS Fix
+- DNS kept reverting to Tailscale MagicDNS (100.100.100.100), breaking cloudflared tunnel
+- Set `pct set 103 -nameserver "1.1.1.1 8.8.8.8"` — survives reboots now
+- Website (rich-ai.net) restored
+
 ### Network & Infrastructure
 - Tailscale tailnet management
 - Proxmox VM/container provisioning

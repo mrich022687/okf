@@ -8,27 +8,31 @@ timestamp: 2026-06-21T23:45:00Z
 
 # DL360 Gen9
 
-## Status: Pending Setup 🚧
+| Status: Initial Setup — Proxmox Install Pending 🚧 |
 
-The DL360 Gen9 has been acquired but is not yet racked or powered on. Will run Proxmox VE as a secondary host.
+The DL360 Gen9 is racked and powered on. Logical drive created on HP Smart Array P440ar. Awaiting Proxmox VE 8 install.
 
-## Planned Configuration
+## Current Configuration
 
 - **Model:** HPE ProLiant DL360 Gen9 (1U rack)
-- **Hostname:** `dl360` (proposed)
-- **Role:** Secondary Proxmox node, potentially clustered with main PVE
-- **Networking:** 40G card for inter-server link between DL360 and main PVE
-- **OS:** Proxmox VE 8 (via Ventoy USB)
+- **Hostname:** `pve2.lan`
+- **IP:** 192.168.12.50 (planned)
+- **Role:** Secondary Proxmox node, to be clustered with main PVE
+- **Networking:** 40G interlink via Mellanox ConnectX-3 Pro (main PVE side installed and detected)
+- **OS:** Proxmox VE 8 (via Ventoy USB — install pending)
+- **Storage:** HP Smart Array P440ar — RAID logical drive created (strip 64K, read-ahead, write-back with BBU)
+- **Root Password:** Stored in GPG vault on main PVE
 
 ## To-Do
 
-1. Rack the server
-2. Connect power and networking (including 40G interlink)
-3. Boot from Ventoy USB, install Proxmox VE 8
-4. Configure IP on LAN
-5. Post-install setup via SSH (Linda)
-6. Configure storage, VMs, and 40G networking
-7. Optionally cluster with main PVE
+1. ✅ Rack the server
+2. ✅ Connect power and networking (including 40G interlink)
+3. ✅ Create logical drive on RAID controller
+4. ◻ Boot from Ventoy USB, install Proxmox VE 8
+5. ◻ Configure IP on LAN (192.168.12.50)
+6. ◻ Post-install setup via SSH (Linda)
+7. ◻ Configure 40G networking between pve and pve2
+8. ◻ Cluster with main PVE
 
 ## References
 
