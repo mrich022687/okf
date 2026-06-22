@@ -63,8 +63,41 @@ timestamp: 2026-06-21T18:15:00Z
   - SCP pipe fallback for mobile network transfers
 
 ### SSH Access Setup
-- Key-based SSH to all 8 devices
-- SSH config in `/root/.ssh/config`
+|- Key-based SSH to all 8 devices
+|- SSH config in `/root/.ssh/config`
+|
+|## 2026-06-21 (Linda)
+|
+|### OKF Knowledge Base — Shared Repo
+|- Cloned shared `okf` repo from `git@github.com:mrich022687/okf.git`
+|- Updated index.md to be a shared KB (Larry + Linda)
+|- Added Ventoy multi-boot USB concept doc
+|- Added DL360 Gen9 hardware doc (pending setup)
+|- Configured git for Hermes main agent
+|
+|### NFS Share — Fixed Stale Mount
+|- Q1900 went offline (hard reset), NFS mounts on PVE hung
+|- iLO (192.168.12.126) was reachable but main OS was down
+|- After reboot, NFS required lazy unmount and remount
+|
+|### Ventoy Multi-Boot USB Created
+|- Downloaded Ventoy v1.1.05 to PVE host
+|- Installed on WesData drive (sdr, 59G)
+|- Copied 14 ISOs from Q1900 `/srv/isos/`:
+|  - Proxmox VE 8, Windows 11, Ubuntu 26.04 Desktop + Server
+|  - Kali Linux, Linux Lite, Lubuntu, Debian XFCE + Gnome
+|  - Fedora KDE + Workstation, Linux Mint, OPNsense, virtio-win
+|- 56G used / 3.5G free
+|
+|### Lubuntu ISO — Transfer and Backup
+|- Lubuntu 26.04 ISO was on Windows laptop desktop
+|- User transferred via USB to Q1900
+|- Copied to `/srv/isos/` on Q1900 for backup
+|- Also added to Ventoy USB
+|
+|### Q1900 Naming Updated
+|- References changed from "Q1900M iLO box" to "q1900" / "q1900m"
+|- Memory and docs updated accordingly
 
 ### Network & Infrastructure
 - Tailscale tailnet management

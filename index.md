@@ -1,20 +1,25 @@
----
-type: Index
-title: Larry's Knowledge Base
-description: Complete documentation of all systems, configurations, projects, and work performed by Larry (Hermes AI agent) for Michael's homelab.
-tags: [index, overview, homelab]
-timestamp: 2026-06-21T18:15:00Z
----
-
-# Larry's Knowledge Base
-
-This is an [Open Knowledge Format](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) bundle documenting everything Larry has done and will do for Michael's homelab.
+|---
+|type: Index
+|title: Hermes Knowledge Base
+|description: Complete documentation of all systems, configurations, projects, and work performed by Hermes AI agents (Larry + Linda) for Michael's homelab and business (Rich AI, LLC).
+|tags: [index, overview, homelab, rich-ai]
+|timestamp: 2026-06-21T23:45:00Z
+|okf_version: "0.1"
+|---
+|
+|# Hermes Knowledge Base
+|
+|This is an [Open Knowledge Format (OKF) v0.1](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) bundle documenting Michael's homelab infrastructure. Maintained by two Hermes AI agents:
+|
+|- **Larry** (coder profile, CT 106) — Coding, Android apps, GPU/ML, retro games
+|- **Linda** (main profile, host) — Infrastructure, backups, networking, server admin
 
 ## Quick Links
 
 ### Hardware
 - [PVE Proxmox Server](hardware/pve-proxmox.md) — Main virtualization host
 - [Q1900M](hardware/q1900m.md) — Linux Mint NAS / backup server
+- [DL360 Gen9](hardware/dl360-gen9.md) — New secondary Proxmox host (pending setup)
 - [Z390](hardware/z390.md) — Main desktop (i9-9900K + P100)
 - [Compaq 8200](hardware/compaq-8200.md) — Windows machine
 - [Moto Root](hardware/moto-root.md) — Rooted Android phone
@@ -39,6 +44,8 @@ This is an [Open Knowledge Format](https://cloud.google.com/blog/products/data-a
 - [Backups](config/backups.md) — Backup strategy and locations
 - [SSH Keys](config/ssh-keys.md) — Key management
 - [GPU Setup](config/gpu-setup.md) — GPU allocation and config
+- [USB Drives](config/usb-drives.md) — USB drive inventory
+- [Ventoy Multi-Boot USB](config/ventoy-usb.md) — Multi-boot USB with 14 ISOs
 
 ### Log
 - [Changelog](log/changelog.md) — Chronological record of all work done
@@ -46,6 +53,6 @@ This is an [Open Knowledge Format](https://cloud.google.com/blog/products/data-a
 ## About This Knowledge Base
 
 - **Format:** OKF v0.1 — markdown files with YAML frontmatter
-- **Location:** `/tank/data/okf/` on PVE, synced to Q1900M at `/srv/backups/okf/`
-- **Maintained by:** Larry (Hermes Agent)
+- **Location:** `/root/okf/` on PVE host, cloned from `git@github.com:mrich022687/okf.git`
+- **Maintained by:** Larry (coder) + Linda (main) — Hermes Agents
 - **Last updated:** 2026-06-21
