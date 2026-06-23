@@ -47,6 +47,15 @@ The DL360 Gen9 is racked, powered on, and iLO 4 is configured for remote managem
 8. ◻ Configure 40G networking between pve and pve2
 9. ◻ Cluster with main PVE
 
+## Setup Lessons Learned
+
+### Network During Initial OS Installation
+- **Only connect the regular Ethernet port** during initial server setup / OS installation
+- **Do NOT connect the 40G/10G card cable** yet — the card's driver may not be recognized by the boot environment or installer, and a cable plugged into an unrecognized card *prevents* the regular NIC from getting a link
+- The Mellanox ConnectX-3 Pro (or any add-on NIC) can confuse the installer's network detection
+- After the OS is installed and the 40G card driver is loaded, cable the 40G link and configure it separately
+- Same principle applies to most servers: boot with only the management NIC connected; add high-speed interconnects post-install
+
 ## References
 
 - Installation ISO on [Ventoy Multi-Boot USB](/config/ventoy-usb.md)
