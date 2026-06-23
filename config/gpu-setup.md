@@ -15,7 +15,7 @@ timestamp: 2026-06-23T04:05:00Z
 | Tesla P4 #1 (8GB) | Main PVE → VM100 (Ubuntu) | ✅ Running | STT (faster-whisper, GPU 0) |
 | Tesla P4 #2 (8GB) | Main PVE → VM100 (Ubuntu) | ✅ Running | TTS (XTTS v2, GPU 1) |
 | Tesla P100 (16GB) | Main PVE (host) | ⬜ Unassigned | Available for assignment |
-| Tesla P4 (8GB) | pve2 (DL360 Gen9) | 🛠️ Being configured | WiFi adapter setup in progress |
+|| Tesla P4 (8GB) | pve2 (DL360 Gen9) | ✅ Driver installed | Available for workloads |
 
 ## Main PVE Server (192.168.12.132)
 
@@ -31,7 +31,9 @@ timestamp: 2026-06-23T04:05:00Z
 
 ## pve2 (DL360 Gen9, 10.10.10.2)
 
-- **1× Tesla P4 (8GB)** — in PCIe slot, being configured
+- **1× Tesla P4 (8GB)** — PCIe slot 08:00.0
+- **Driver:** NVIDIA 580.167.08 (Tesla Data Center), CUDA 13.0
+- **Status:** ✅ Working — 50°C, 23W idle
 - Connected to main PVE via 40G Mellanox link
 
 ## Notes

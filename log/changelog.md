@@ -193,6 +193,18 @@ timestamp: 2026-06-21T18:15:00Z
 |- DNS set to 1.1.1.1 / 8.8.8.8 (persistent in /etc/network/interfaces)
 |- NAT added on main PVE so pve2 can reach internet via 40G link
 
+### 🌐 pve2 Networking Fixed (nic2 → nic3)
+|- Ethernet cable was plugged into **nic3** but vmbr0 was bridged to **nic2**
+|- Changed bridge port from nic2 to nic3 — link now up at 1 Gbps
+|- pve2 now reachable at 192.168.12.50 over LAN ✅
+|- Default route switched from WiFi to ethernet
+
+### 🎮 Tesla P4 Driver Installed on pve2
+|- Driver: **NVIDIA 580.167.08** (Tesla Data Center), downloaded 379 MB
+|- CUDA 13.0 — nvidia-smi verified ✅
+|- Temp: 50°C, Power: 23W/75W idle
+|- Fixed: had to unload nouveau driver first (was holding the GPU)
+
 ## 2026-06-22
 
 ### Cluster Fixed — 40G Link Now Active for Corosync

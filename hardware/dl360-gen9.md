@@ -21,9 +21,9 @@ The DL360 Gen9 is racked, powered on, with **Proxmox VE 9.2** running at **192.1
 
 - **Model:** HPE ProLiant DL360 Gen9 (1U rack)
 - **Hostname:** `pve2.lan`
-- **IP:** 192.168.12.50/24 (vmbr0 via nic4)
+- **IP:** 192.168.12.50/24 (vmbr0 via **nic3** — was nic2)
 - **Gateway:** 192.168.12.1
-- **DNS:** 1.1.1.1
+- **DNS:** 1.1.1.1 (persistent in /etc/network/interfaces)
 - **Root Password:** `mcrart8794!`
 - **Role:** Secondary Proxmox node, **clustered** with main PVE via `richai-cluster`
 - **OS:** Proxmox VE **9.2** (Trixie/Debian 13) — fully updated ✅
@@ -92,7 +92,9 @@ Both servers have matching HP FlexibleLOM ConnectX-3 Pro cards:
 
 ## GPU
 - **1× NVIDIA Tesla P4 (8GB)** — in PCIe slot (08:00.0)
-- Being configured; currently used for WiFi adapter setup
+- **Driver:** 580.167.08 (Tesla Data Center driver)
+- **CUDA:** 13.0
+- **Status:** ✅ Working — nvidia-smi reports 50°C, 23W/75W, 7680 MiB VRAM
 - Connected to main PVE via 40G link (10.10.10.0/30)
 
 ## Setup Lessons Learned
