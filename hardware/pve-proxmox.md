@@ -19,6 +19,12 @@ The primary server running Proxmox VE (7.0.6-2-pve) on a HP machine with ZFS tan
 - **SSH:** `root@192.168.12.132` (via `ssh pve`)
 
 ## PCI Devices
+
+## Memory
+- **Total:** 128 GB (8× 16GB DDR4 ECC RDIMMs)
+- **Channels in use:** 2 of 4 per CPU (suboptimal)
+- **Current population per CPU:** DIMM 1, 4, 9, 12
+- **Target:** 128 GB once relocated to DIMM 1-8 for 4-channel interleave
 - **01:00.1** — Matrox G200EH (onboard VGA)
 - **05:00.0** — NVIDIA Tesla P4 (GP104, 8GB)
 - **0b:00.0** — NVIDIA Tesla P4 (GP104, 8GB)

@@ -19,6 +19,17 @@ The DL360 Gen9 is racked, powered on, with **Proxmox VE 9.2** running at **192.1
 
 ## Current Configuration
 
+### CPUs
+- **CPU 1:** Intel Xeon E5-2690 v4 @ 2.60GHz (14C/28T)
+- **CPU 2:** Intel Xeon E5-2690 v4 @ 2.60GHz (14C/28T)
+- **Total cores/threads:** 28C / 56T
+
+### Memory
+- **Current:** 64 GB (4× 16GB DDR4-2133 ECC RDIMMs)
+- **Channels in use:** 2 of 4 per CPU (slots PROC* DIMM 9, 12 — suboptimal)
+- **Planned:** 128 GB after adding 4 more 16GB sticks
+- **Target layout:** 8× 16GB in DIMM 1-8 per CPU (all 4 channels active)
+
 - **Model:** HPE ProLiant DL360 Gen9 (1U rack)
 - **Hostname:** `pve2.lan`
 - **IP:** 192.168.12.50/24 (vmbr0 via **nic3** — was nic2)
