@@ -179,7 +179,19 @@ timestamp: 2026-06-21T18:15:00Z
   - **pve2:** 1× Tesla P4 (PCIe slot 08:00.0)
   - **Z390 desktop:** 💀 Dead — P100 removed and reinstalled in main PVE
 - Updated `config/gpu-setup.md`, `hardware/dl360-gen9.md`, `hardware/z390.md`
-- Corrected persistent memory: Z390 dead, P100 back in main PVE
+|- Corrected persistent memory: Z390 dead, P100 back in main PVE
+
+### 🔒 pve2 Security Hardening
+|- SSH hardened: key-only auth, root login via key only, password auth disabled
+|- fail2ban installed and running — bans after 5 failed attempts in 30m
+|- UFW firewall active — default deny incoming
+|  - SSH (22): LAN + 40G link only
+|  - Proxmox GUI (8006): LAN only
+|  - Cluster/SPICE (111, 3128, 60000-60050): 40G link only
+|  - 40G interface (enp4s0): fully open (inter-server traffic)
+|- iperf3 test port (5201) closed
+|- DNS set to 1.1.1.1 / 8.8.8.8 (persistent in /etc/network/interfaces)
+|- NAT added on main PVE so pve2 can reach internet via 40G link
 
 ## 2026-06-22
 
