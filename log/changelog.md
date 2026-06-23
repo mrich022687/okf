@@ -63,41 +63,41 @@ timestamp: 2026-06-21T18:15:00Z
   - SCP pipe fallback for mobile network transfers
 
 ### SSH Access Setup
-|- Key-based SSH to all 8 devices
-|- SSH config in `/root/.ssh/config`
-|
-|## 2026-06-21 (Linda)
-|
-|### OKF Knowledge Base — Shared Repo
-|- Cloned shared `okf` repo from `git@github.com:mrich022687/okf.git`
-|- Updated index.md to be a shared KB (Larry + Linda)
-|- Added Ventoy multi-boot USB concept doc
-|- Added DL360 Gen9 hardware doc (pending setup)
-|- Configured git for Hermes main agent
-|
-|### NFS Share — Fixed Stale Mount
-|- Q1900 went offline (hard reset), NFS mounts on PVE hung
-|- iLO (192.168.12.126) was reachable but main OS was down
-|- After reboot, NFS required lazy unmount and remount
-|
-|### Ventoy Multi-Boot USB Created
-|- Downloaded Ventoy v1.1.05 to PVE host
-|- Installed on WesData drive (sdr, 59G)
-|- Copied 14 ISOs from Q1900 `/srv/isos/`:
-|  - Proxmox VE 8, Windows 11, Ubuntu 26.04 Desktop + Server
-|  - Kali Linux, Linux Lite, Lubuntu, Debian XFCE + Gnome
-|  - Fedora KDE + Workstation, Linux Mint, OPNsense, virtio-win
-|- 56G used / 3.5G free
-|
-|### Lubuntu ISO — Transfer and Backup
-|- Lubuntu 26.04 ISO was on Windows laptop desktop
-|- User transferred via USB to Q1900
-|- Copied to `/srv/isos/` on Q1900 for backup
-|- Also added to Ventoy USB
-|
-|### Q1900 Naming Updated
-|- References changed from "Q1900M iLO box" to "q1900" / "q1900m"
-|- Memory and docs updated accordingly
+- Key-based SSH to all 8 devices
+- SSH config in `/root/.ssh/config`
+
+## 2026-06-21 (Linda)
+
+### OKF Knowledge Base — Shared Repo
+- Cloned shared `okf` repo from `git@github.com:mrich022687/okf.git`
+- Updated index.md to be a shared KB (Larry + Linda)
+- Added Ventoy multi-boot USB concept doc
+- Added DL360 Gen9 hardware doc (pending setup)
+- Configured git for Hermes main agent
+
+### NFS Share — Fixed Stale Mount
+- Q1900 went offline (hard reset), NFS mounts on PVE hung
+- iLO (192.168.12.126) was reachable but main OS was down
+- After reboot, NFS required lazy unmount and remount
+
+### Ventoy Multi-Boot USB Created
+- Downloaded Ventoy v1.1.05 to PVE host
+- Installed on WesData drive (sdr, 59G)
+- Copied 14 ISOs from Q1900 `/srv/isos/`:
+  - Proxmox VE 8, Windows 11, Ubuntu 26.04 Desktop + Server
+  - Kali Linux, Linux Lite, Lubuntu, Debian XFCE + Gnome
+  - Fedora KDE + Workstation, Linux Mint, OPNsense, virtio-win
+- 56G used / 3.5G free
+
+### Lubuntu ISO — Transfer and Backup
+- Lubuntu 26.04 ISO was on Windows laptop desktop
+- User transferred via USB to Q1900
+- Copied to `/srv/isos/` on Q1900 for backup
+- Also added to Ventoy USB
+
+### Q1900 Naming Updated
+- References changed from "Q1900M iLO box" to "q1900" / "q1900m"
+- Memory and docs updated accordingly
 
 ## 2026-06-22
 
@@ -146,16 +146,16 @@ timestamp: 2026-06-21T18:15:00Z
 - Config made permanent in `/etc/network/interfaces` on both sides
 
 ### CT 106 (Hermes/Larry) — Tailscale TUN Fix
-|- Tailscale stopped working: `/dev/net/tun` missing in LXC container
-|- Fixed: added `lxc.cgroup2.devices.allow: c 10:200 rwm` and TUN mount to config
-|- Container restarted, TUN device now present
-|- Tailscale re-auth needed: https://login.tailscale.com/a/69e24140146df
+- Tailscale stopped working: `/dev/net/tun` missing in LXC container
+- Fixed: added `lxc.cgroup2.devices.allow: c 10:200 rwm` and TUN mount to config
+- Container restarted, TUN device now present
+- Tailscale re-auth needed: https://login.tailscale.com/a/69e24140146df
 
 ### Network & Infrastructure
-|- Tailscale tailnet management
-|- Proxmox VM/container provisioning
-|- K3s cluster setup
-|- NFS/Samba share configuration
+- Tailscale tailnet management
+- Proxmox VM/container provisioning
+- K3s cluster setup
+- NFS/Samba share configuration
 ## 2026-06-23
 
 ### Knowledge Base — Cleanup & Sync
@@ -168,18 +168,18 @@ timestamp: 2026-06-21T18:15:00Z
   - pve2 only reachable via 40G link at 10.10.10.2
 
 ### pve2 Hardware Captured
-|- 2x Xeon E5-2690 v4 (28C/56T @ 2.6GHz)
-|- 62 GB RAM
-|- 1x Tesla P4 GPU (GP104, 8GB)
-|- 1x Mellanox ConnectX-3 Pro (40GbE)
+- 2x Xeon E5-2690 v4 (28C/56T @ 2.6GHz)
+- 62 GB RAM
+- 1x Tesla P4 GPU (GP104, 8GB)
+- 1x Mellanox ConnectX-3 Pro (40GbE)
 
 ### GPU Inventory Updated
-|- Confirmed full GPU layout via PCIe scan:
-|  - **Main PVE:** 2× Tesla P4 (passed through to VM100) + 1× Tesla P100 (unassigned on host)
-|  - **pve2:** 1× Tesla P4 (PCIe slot 08:00.0)
-|  - **Z390 desktop:** 💀 Dead — P100 removed and reinstalled in main PVE
-|- Updated `config/gpu-setup.md`, `hardware/dl360-gen9.md`, `hardware/z390.md`
-|- Corrected persistent memory: Z390 dead, P100 back in main PVE
+- Confirmed full GPU layout via PCIe scan:
+  - **Main PVE:** 2× Tesla P4 (passed through to VM100) + 1× Tesla P100 (unassigned on host)
+  - **pve2:** 1× Tesla P4 (PCIe slot 08:00.0)
+  - **Z390 desktop:** 💀 Dead — P100 removed and reinstalled in main PVE
+- Updated `config/gpu-setup.md`, `hardware/dl360-gen9.md`, `hardware/z390.md`
+- Corrected persistent memory: Z390 dead, P100 back in main PVE
 
 ## 2026-06-22
 
