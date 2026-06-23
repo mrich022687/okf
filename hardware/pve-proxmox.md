@@ -1,26 +1,33 @@
 ---
 type: Server
 title: PVE Proxmox Server
-description: Main virtualization host running Proxmox VE. Hosts all containers and VMs.
-tags: [proxmox, pve, virtualization, server]
-timestamp: 2026-06-21T18:15:00Z
+description: Main virtualization host running Proxmox VE 7. Hosts all containers, VMs, and the OKF knowledge base. Clustered with pve2 via richai-cluster.
+tags: [proxmox, pve, virtualization, server, cluster, mellanox]
+timestamp: 2026-06-23T00:00:00Z
 resource: ssh://root@192.168.12.132
 ---
 
 # PVE Proxmox Server
 
 ## Overview
-The primary server running Proxmox VE (7.0.6-2-pve) on a HP machine with ZFS tank storage.
+The primary server running Proxmox VE (7.0.6-2-pve) on a HP machine with ZFS tank storage. Forms **richai-cluster** with pve2 (DL360 Gen9).
 
 - **Hostname:** pve
+- **Role:** Cluster Node 1 (richai-cluster)
 - **IP:** 192.168.12.132
+- **40G Link:** 10.10.10.1/30 (Mellanox ConnectX-3 Pro -> pve2)
 - **SSH:** `root@192.168.12.132` (via `ssh pve`)
-- **API:** root@pam (password known)
+
+## PCI Devices
+- **01:00.1** — Matrox G200EH (onboard VGA)
+- **05:00.0** — NVIDIA Tesla P4 (GP104, 8GB)
+- **0b:00.0** — NVIDIA Tesla P4 (GP104, 8GB)
+- **84:00.0** — NVIDIA Tesla P100 PCIe 16GB (GP100, 16GB)
+- **04:00.0** — Mellanox ConnectX-3 Pro (MT27520, 40GbE)
 
 ## Storage
 - **sda:** 136.7G — OS (LVM root + swap)
-- **sdb:** 186.3G — ZFS pool member (tank)
-- **sdc/sdd/sde:** 1.6T each — ZFS pool members (tank)
+- **sdb/sdc/sdd/sde:** 1.6T each — ZFS pool members (tank)
 - **tank capacity:** 2.8T total, 2.7T available
 
 ### ZFS Datasets on tank
@@ -37,19 +44,32 @@ The primary server running Proxmox VE (7.0.6-2-pve) on a HP machine with ZFS tan
 ## Containers
 | VMID | Name | Status | Spec |
 |------|------|--------|------|
-| 103 | richai-web | Running | 2C/4G |
+| 103 | richai-web | Running | 1C/512MB — Cloudflare tunnel host |
 | 104 | k3s-server | Stopped | 2C/8G |
-| 106 | **hermes** | **Running** | **2C/4G, this container** |
+| 106 | **hermes (Larry)** | **Running** | **2C/4G — coder profile** |
 
 ## VMs
 | VMID | Name | Status | Spec |
 |------|------|--------|------|
-| 100 | ubuntu-gnome | Running | 16GB |
-| 101 | windows-11 | Stopped | 16GB |
-| 102 | fedora | Stopped | 4GB |
+| 100 | ubuntu-gnome | Stopped | 6C/16G — voice pipeline host |
+| 101 | windows-11 | Running | 6C/16G — daily driver VM |
+| 102 | fedora | Stopped | 4C/4G |
+
+## 40G Mellanox ConnectX-3 Pro
+- **PCI:** 04:00.0 — MT27520 Family
+- **Interface:** eno49d1 (altname enp4s0d1)
+- **IP:** 10.10.10.1/30, MTU 9000
+- **Link partner:** pve2 (10.10.10.2/30)
+- **Speed:** 40 Gbps, ~26 Gbps real-world
+- **Fix:** port_type_array=2,2 in mlx4_core module
 
 ## USB Drives (current)
 See [USB Drives](config/usb-drives.md) for current inventory.
 
 ## Snapshots
-- `tank/subvol-106-disk-0@hermes-golden` — Golden snapshot of CT 106
+- `tank/subvol-106-disk-0@hermes-golden` -- Golden snapshot of CT 106
+
+## References
+- [richai-cluster](hardware/richai-cluster.md)
+- [DL360 Gen9 / pve2](hardware/dl360-gen9.md)
+- [Network Topology](network/topology.md)

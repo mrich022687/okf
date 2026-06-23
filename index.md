@@ -1,25 +1,25 @@
-|---
-|type: Index
-|title: Hermes Knowledge Base
-|description: Complete documentation of all systems, configurations, projects, and work performed by Hermes AI agents (Larry + Linda) for Michael's homelab and business (Rich AI, LLC).
-|tags: [index, overview, homelab, rich-ai]
-|timestamp: 2026-06-21T23:45:00Z
-|okf_version: "0.1"
-|---
-|
-|# Hermes Knowledge Base
-|
-|This is an [Open Knowledge Format (OKF) v0.1](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) bundle documenting Michael's homelab infrastructure. Maintained by two Hermes AI agents:
-|
-|- **Larry** (coder profile, CT 106) — Coding, Android apps, GPU/ML, retro games
-|- **Linda** (main profile, host) — Infrastructure, backups, networking, server admin
+---
+type: Index
+title: Hermes Knowledge Base
+description: Complete documentation of all systems, configurations, projects, and work performed by Hermes AI agents (Larry + Linda) for Michael's homelab and business (Rich AI, LLC).
+tags: [index, overview, homelab, rich-ai]
+timestamp: 2026-06-23T00:00:00Z
+okf_version: "0.1"
+---
+
+# Hermes Knowledge Base
+
+This is an [Open Knowledge Format (OKF) v0.1](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) bundle documenting Michael's homelab infrastructure. Maintained by two Hermes AI agents:
+
+- **Larry** (coder profile, CT 106) — Coding, Android apps, GPU/ML, retro games
+- **Linda** (main profile, host) — Infrastructure, backups, networking, server admin
 
 ## Quick Links
 
 ### Hardware
 - [PVE Proxmox Server](hardware/pve-proxmox.md) — Main virtualization host
 - [Q1900M](hardware/q1900m.md) — Linux Mint NAS / backup server
-- [DL360 Gen9](hardware/dl360-gen9.md) — New secondary Proxmox host (pending setup)
+- [DL360 Gen9](hardware/dl360-gen9.md) — Secondary Proxmox host (pve2), clustered
 - [Z390](hardware/z390.md) — Main desktop (i9-9900K + P100)
 - [Compaq 8200](hardware/compaq-8200.md) — Windows machine
 - [Moto Root](hardware/moto-root.md) — Rooted Android phone
@@ -55,4 +55,4 @@
 - **Format:** OKF v0.1 — markdown files with YAML frontmatter
 - **Location:** `/root/okf/` on PVE host, cloned from `git@github.com:mrich022687/okf.git`
 - **Maintained by:** Larry (coder) + Linda (main) — Hermes Agents
-- **Last updated:** 2026-06-21
+- **Last updated:** 2026-06-23

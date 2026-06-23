@@ -156,3 +156,20 @@ timestamp: 2026-06-21T18:15:00Z
 |- Proxmox VM/container provisioning
 |- K3s cluster setup
 |- NFS/Samba share configuration
+## 2026-06-23
+
+### Knowledge Base — Cleanup & Sync
+- Fixed broken markdown in index.md (leading pipes from Linda's edit)
+- Updated network topology: added pve2, iLO 4, 40G interconnect details
+- Updated PVE hardware doc: added 40G Mellanox card, PCI device list, cluster role
+- Created missing files: config/ssh-keys.md, projects/k3s-cluster.md
+- Identified cluster issue: pve2's vmbr0 (192.168.12.50) is DOWN
+  - Cluster shows 1/2 votes — not quorate until pve2's management NIC is connected
+  - pve2 only reachable via 40G link at 10.10.10.2
+
+### pve2 Hardware Captured
+- 2x Xeon E5-2690 v4 (28C/56T @ 2.6GHz)
+- 62 GB RAM
+- 1x Tesla P4 GPU (GP104, 8GB)
+- 1x Mellanox ConnectX-3 Pro (40GbE)
+- 186GB SSD (OS) + 136GB SAS (storage)
