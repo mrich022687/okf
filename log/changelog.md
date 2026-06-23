@@ -126,6 +126,30 @@ timestamp: 2026-06-21T18:15:00Z
 - iLO accessible via web GUI at https://192.168.12.100 and SSH on port 22
 - DL360 hardware doc updated in OKF
 
+### DL360 Gen9 — Proxmox VE 8 Installed & Running
+- Proxmox VE 8 reinstalled on pve2 — IP 192.168.12.50/24, gateway 192.168.12.1, DNS 1.1.1.1
+- Enterprise repo disabled, no-subscription repo added
+- Passwordless SSH access from main PVE host configured
+- Root password: mcrart8794!
+- `apt dist-upgrade` still running
+- OKF hardware doc fully updated
+
+### 40G Mellanox — Port Mode Issue
+- Both servers have HP FlexibleLOM ConnectX-3 Pro cards installed
+- Link down — no carrier on either side
+- **Root cause:** Port mapped to Ethernet (Port 2) shows `phys_state: Disabled`
+- Port 1 stuck in InfiniBand mode despite `port_type_array=2,2` module parameter
+- Added `options mlx4_core port_type_array=2,2` to `/etc/modprobe.d/mlx4_core.conf` on both servers
+- Suspect needs firmware-level config (mlxconfig/MFT tools) or specific port on card bracket
+- Linked directly between servers (no switch)
+- PVE2 updates and reboot pending
+
+### CT 106 (Hermes/Larry) — Tailscale TUN Fix
+- Tailscale stopped working: `/dev/net/tun` missing in LXC container
+- Fixed: added `lxc.cgroup2.devices.allow: c 10:200 rwm` and TUN mount to config
+- Container restarted, TUN device now present
+- Tailscale re-auth needed: https://login.tailscale.com/a/69e24140146df
+
 ### Network & Infrastructure
 |- Tailscale tailnet management
 |- Proxmox VM/container provisioning
