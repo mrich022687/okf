@@ -41,6 +41,9 @@ This is an [Open Knowledge Format (OKF) v0.1](https://cloud.google.com/blog/prod
 - [K3s Cluster](projects/k3s-cluster.md) — Lightweight Kubernetes cluster
 
 ### Config
+### References
+- [Ford Upfitter Guides](references/ford-upfitter-guides.md) — Ford Super Duty wiring diagrams and upfitter documentation
+
 - [Backups](config/backups.md) — Backup strategy and locations
 - [SSH Keys](config/ssh-keys.md) — Key management
 - [GPU Setup](config/gpu-setup.md) — GPU allocation and config

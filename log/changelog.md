@@ -205,6 +205,12 @@ timestamp: 2026-06-21T18:15:00Z
 |- Temp: 50°C, Power: 23W/75W idle
 |- Fixed: had to unload nouveau driver first (was holding the GPU)
 
+### 🎮 P100 Driver Installed on Main PVE Host
+|- Tesla P100-PCIE-16GB (84:00.0) — driver **580.167.08** installed on host
+|- 42°C, 30W/250W idle, 16 GB VRAM ✅
+|- Both P4s (VM 100) already had 580.159.03 driver — working
+|- **All 4 GPUs across homelab now have drivers installed**
+
 ## 2026-06-22
 
 ### Cluster Fixed — 40G Link Now Active for Corosync
@@ -219,3 +225,20 @@ timestamp: 2026-06-21T18:15:00Z
 - WiFi config added to /etc/network/interfaces (wpa-ssid/wpa-psk)
 - Internet working: ping 1.1.1.1 at 38ms
 - Realtek RTL8188GU (fast adapter): CD-ROM mode switched successfully (0bda:1a2b → 0bda:c811) but driver (rtw88_8821cu/rtl8xxxu) fails to claim it on PVE kernel 7.0.2 — would need newer kernel
+
+### 2026-06-23 — Ford Upfitter Guides OKF Documentation
+- Added  — complete reference doc for all 3 Ford upfitter PDFs
+- Copied PDFs to  (PDFs from Q1900M)
+- Documented which PDF is the actual wiring guide (2025 BBLB) vs compliance docs (2026/2027 IVMs)
+- Included taillamp pinouts (C423 LH, C422 RH), turn signal circuits (CLS23, CLS27), front turn signals (CLS21, CLS25)
+- End-of-frame blunt cut wire colors for stop/turn/park/backup circuits
+- FDRS reconfiguration instructions for separate stop/turn or LED lamps
+- Updated index.md with References section linking to upfitter guides
+2026-06-23 — Ford Upfitter Guides OKF Documentation
+- Added references/ford-upfitter-guides.md — complete reference doc for all 3 Ford upfitter PDFs
+- Copied PDFs to OKF bundle at references/ford-upfitter-guides/ (from Q1900M)
+- Documented which PDF is the actual wiring guide (2025 BBLB) vs compliance docs (2026/2027 IVMs)
+- Included taillamp pinouts (C423 LH, C422 RH), turn signal circuits (CLS23, CLS27), front turn signals (CLS21, CLS25)
+- End-of-frame blunt cut wire colors for stop/turn/park/backup circuits
+- FDRS reconfiguration instructions for separate stop/turn or LED lamps
+- Updated index.md with References section linking to upfitter guides
