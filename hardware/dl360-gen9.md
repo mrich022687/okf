@@ -1,29 +1,50 @@
 ---
 type: Server
 title: DL360 Gen9
-description: HPE DL360 Gen9 1U rack server — secondary Proxmox host (pve2) with iLO 4 remote management. Proxmox VE installed and running.
-tags: [dl360, gen9, hpe, server, proxmox, ilo, pve2]
-timestamp: 2026-06-23T06:45:00Z
+description: HPE DL360 Gen9 1U rack server — secondary Proxmox host (pve2) w/ iLO 4. Clustered into richai-cluster w/ main PVE. 40G Mellanox link, 146GB SAS storage added.
+tags: [dl360, gen9, hpe, server, proxmox, ilo, pve2, cluster, mellanox]
+timestamp: 2026-06-23T03:05:00Z
 ---
 
-# DL360 Gen9
+| DL360 Gen9
+|
+||| Status: ✅ Clustered to Main PVE — Fully Operational |
+|
+The DL360 Gen9 is racked, powered on, with **Proxmox VE 9.2** running at **192.168.12.50**. iLO 4 configured for remote management. Passwordless SSH access from main PVE host.
 
-|| Status: Proxmox VE Installed & Running ✅ |
-
-The DL360 Gen9 is racked, powered on, with Proxmox VE 8 running at 192.168.12.50. iLO 4 configured for remote management. Passwordless SSH access from main PVE host.
+**Cluster Status:** Joined `richai-cluster` as node 2 🎉
+- Node 1: `pve` (main server, 192.168.12.132)
+- Node 2: `pve2` (this server, 192.168.12.50)
+- Both nodes visible in Proxmox web GUI
 
 ## Current Configuration
 
 - **Model:** HPE ProLiant DL360 Gen9 (1U rack)
 - **Hostname:** `pve2.lan`
-- **IP:** 192.168.12.50/24 (vmbr0 via nic2)
+- **IP:** 192.168.12.50/24 (vmbr0 via nic4)
 - **Gateway:** 192.168.12.1
 - **DNS:** 1.1.1.1
 - **Root Password:** `mcrart8794!`
-- **Role:** Secondary Proxmox node, to be clustered with main PVE
-- **OS:** Proxmox VE 8 (Trixie/Debian 13)
-- **Storage:** HP Smart Array P440ar — RAID logical drive created (strip 64K, read-ahead, write-back with BBU)
+- **Role:** Secondary Proxmox node, **clustered** with main PVE via `richai-cluster`
+- **OS:** Proxmox VE **9.2** (Trixie/Debian 13) — fully updated ✅
+- **Storage Controller:** HP Smart Array P440ar
 - **Repos:** No-subscription enabled, enterprise repo disabled
+
+## Storage
+
+### Array A (OS — SATA SSD)
+- **Physical Drive:** Bay 8 (200 GB SATA SSD)
+- **Logical Volume:** RAID 0, 186.28 GB
+- **Usage:** Proxmox OS (`/` + swap + local-lvm)
+
+### Array B (Extra — SAS HDD) 🆕
+- **Physical Drive:** Bay 7 (146 GB SAS HDD)
+- **Logical Volume:** RAID 0, 136.7 GB
+- **Filesystem:** ext4, label `pve2-extra`
+- **Mount:** `/mnt/pve2-extra` (fstab persistent)
+- **Proxmox Storage:** Added as `pve2-extra` (dir type) — active and available
+- **Content:** ISOs, templates, backups, containers, snippets
+- **Free Space:** ~127 GB
 
 ## iLO 4 Configuration
 
@@ -45,13 +66,14 @@ Both servers have matching HP FlexibleLOM ConnectX-3 Pro cards:
 
 **Current Status:** ✅ **WORKING!** 40 Gbps link established.
 
-**Solution:** The cable was plugged into the card's Port 1, which defaults to InfiniBand mode. The `mlx4_core` module parameter `port_type_array=2,2` (forces both ports to Ethernet) fixed it. The module needed to be reloaded with the parameter for it to take effect — modprobe.d config alone wasn't enough until reboot/module reload.
+**Solution:** The cable was plugged into the card's Port 1, which defaults to InfiniBand mode. The `mlx4_core` module parameter `port_type_array=2,2` (forces both ports to Ethernet) fixed it. The module needed to be reloaded with the parameter for it to take effect — modprobe.d config alone wasn't enough until module reload.
 
 **Link details:**
 - Main PVE: **eno49d1** (Port 2) at 10.10.10.1/30, MTU 9000
 - PVE2: **enp4s0** (Port 1) at 10.10.10.2/30, MTU 9000
-- Speed: **40 Gbps** (40000baseCR4/Full), latency ~0.2ms
-- Connection: Direct cable between servers (no switch)
+- Speed: **40 Gbps** (40000baseCR4/Full), latency ~0.19ms
+- Real-world throughput: **26 Gbps** (verified via iperf3)
+- Connection: Direct-attach copper cable between servers (no switch)
 - Config made permanent in `/etc/network/interfaces` on both sides
 
 ## To-Do
@@ -60,12 +82,16 @@ Both servers have matching HP FlexibleLOM ConnectX-3 Pro cards:
 2. ✅ Connect power, networking, and iLO dedicated port
 3. ✅ Create logical drive on RAID controller
 4. ✅ Configure iLO 4 (dedicated port, DHCP, user accounts, DNS name)
-5. ✅ Boot from Ventoy USB, install Proxmox VE 8
+5. ✅ Boot from Ventoy USB, install Proxmox VE
 6. ✅ Configure IP on LAN (192.168.12.50)
-7. ◻ Run `apt dist-upgrade` and reboot pve2
-8. ✅ Fix 40G Mellanox link — port_type_array=2,2, module reload, IPs configured
-9. ◻ Configure 40G networking between pve and pve2
-10. ◻ Cluster with main PVE
+7. ✅ Run `apt dist-upgrade` — security patches installed
+8. ✅ Fix 40G Mellanox link — port_type_array=2,2, module reload, IPs configured, 26 Gbps verified
+9. ✅ Configure 40G networking between pve and pve2
+10. ✅ Cluster with main PVE (richai-cluster)
+11. ✅ Add 146 GB SAS drive (Bay 7) → RAID 0 → ext4 → Proxmox storage `pve2-extra`
+
+## Environment
+
 
 ## Setup Lessons Learned
 
