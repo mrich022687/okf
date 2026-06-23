@@ -116,8 +116,18 @@ timestamp: 2026-06-21T18:15:00Z
 - Set `pct set 103 -nameserver "1.1.1.1 8.8.8.8"` — survives reboots now
 - Website (rich-ai.net) restored
 
+### DL360 Gen9 — iLO 4 Configured
+- iLO dedicated port mode set to "On" (dedicated RJ-45 port)
+- iLO connected to ASUS router/switch
+- DHCP enabled — IP assigned: 192.168.12.100
+- DNS name set to `pve2-ilo`
+- User account `Michael` created with full admin privileges (password: mcrart8794!)
+- Default iLO account: `ILOMXQ80304TS` (sticker password)
+- iLO accessible via web GUI at https://192.168.12.100 and SSH on port 22
+- DL360 hardware doc updated in OKF
+
 ### Network & Infrastructure
-- Tailscale tailnet management
-- Proxmox VM/container provisioning
-- K3s cluster setup
-- NFS/Samba share configuration
+|- Tailscale tailnet management
+|- Proxmox VM/container provisioning
+|- K3s cluster setup
+|- NFS/Samba share configuration
