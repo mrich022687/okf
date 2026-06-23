@@ -168,8 +168,30 @@ timestamp: 2026-06-21T18:15:00Z
   - pve2 only reachable via 40G link at 10.10.10.2
 
 ### pve2 Hardware Captured
-- 2x Xeon E5-2690 v4 (28C/56T @ 2.6GHz)
-- 62 GB RAM
-- 1x Tesla P4 GPU (GP104, 8GB)
-- 1x Mellanox ConnectX-3 Pro (40GbE)
-- 186GB SSD (OS) + 136GB SAS (storage)
+|- 2x Xeon E5-2690 v4 (28C/56T @ 2.6GHz)
+|- 62 GB RAM
+|- 1x Tesla P4 GPU (GP104, 8GB)
+|- 1x Mellanox ConnectX-3 Pro (40GbE)
+
+### GPU Inventory Updated
+|- Confirmed full GPU layout via PCIe scan:
+|  - **Main PVE:** 2× Tesla P4 (passed through to VM100) + 1× Tesla P100 (unassigned on host)
+|  - **pve2:** 1× Tesla P4 (PCIe slot 08:00.0)
+|  - **Z390 desktop:** 💀 Dead — P100 removed and reinstalled in main PVE
+|- Updated `config/gpu-setup.md`, `hardware/dl360-gen9.md`, `hardware/z390.md`
+|- Corrected persistent memory: Z390 dead, P100 back in main PVE
+
+## 2026-06-22
+
+### Cluster Fixed — 40G Link Now Active for Corosync
+- Changed corosync ring0_addr on both nodes from LAN IPs (192.168.12.x) to 40G link IPs (10.10.10.x)
+- Corosync now communicates over the direct 40G Mellanox cable
+- **Cluster quorate** — 2/2 votes, both nodes online
+- No LAN cable needed for cluster operation
+
+### pve2 Internet — USB WiFi (AR9271)
+- Atheros AR9271 USB WiFi adapter (wlx24ec99a73b1d) connected to PeterPanWithMeTwin2
+- IP: 192.168.12.195/24 via DHCP, signal -22 dBm, 72 Mbps
+- WiFi config added to /etc/network/interfaces (wpa-ssid/wpa-psk)
+- Internet working: ping 1.1.1.1 at 38ms
+- Realtek RTL8188GU (fast adapter): CD-ROM mode switched successfully (0bda:1a2b → 0bda:c811) but driver (rtw88_8821cu/rtl8xxxu) fails to claim it on PVE kernel 7.0.2 — would need newer kernel

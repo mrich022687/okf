@@ -1,9 +1,9 @@
 ---
 type: Config
 title: GPU Configuration
-description: GPU allocation and setup across the homelab. Includes P4 and P100 cards.
+description: GPU allocation and setup across the homelab. Three NVIDIA GPUs in main PVE server, one in pve2.
 tags: [gpu, nvidia, p4, p100, configuration]
-timestamp: 2026-06-21T18:15:00Z
+timestamp: 2026-06-23T04:05:00Z
 ---
 
 # GPU Configuration
@@ -12,19 +12,29 @@ timestamp: 2026-06-21T18:15:00Z
 
 | Card | Location | Status | Use |
 |------|----------|--------|-----|
-| Tesla P4 (8GB) | VM100 (Ubuntu) | ✅ Running | STT (GPU 0), TTS (GPU 1) |
-| Tesla P100 (16GB) | Z390 | ⚠️ Unreachable | Primary ML card |
+| Tesla P4 #1 (8GB) | Main PVE → VM100 (Ubuntu) | ✅ Running | STT (faster-whisper, GPU 0) |
+| Tesla P4 #2 (8GB) | Main PVE → VM100 (Ubuntu) | ✅ Running | TTS (XTTS v2, GPU 1) |
+| Tesla P100 (16GB) | Main PVE (host) | ⬜ Unassigned | Available for assignment |
+| Tesla P4 (8GB) | pve2 (DL360 Gen9) | 🛠️ Being configured | WiFi adapter setup in progress |
 
-## VM100 GPU Setup
-- **2× Tesla P4** via PCIe passthrough
+## Main PVE Server (192.168.12.132)
+
+### VM100 GPU Setup
+- **2× Tesla P4** via PCIe passthrough (05:00.0 + 0b:00.0)
 - GPU 0: faster-whisper large-v3 (STT)
 - GPU 1: XTTS v2 (TTS)
+- VM currently **stopped**
 
-## Planned Expansion
-- 2 more P4s and 2 more P100s arriving (PCIe risers expected late June)
-- Goal: Consolidate all 4 GPUs in PVE via PCIe risers
-- Z390 P100 hits 83°C throttle at ~130W passive — needs active cooling solution
+### Unassigned GPU
+- **Tesla P100 PCIe 16GB** (84:00.0) — sitting on host, not passed to any VM yet
+- Can be assigned to a VM for ML workloads or AI inference
+
+## pve2 (DL360 Gen9, 10.10.10.2)
+
+- **1× Tesla P4 (8GB)** — in PCIe slot, being configured
+- Connected to main PVE via 40G Mellanox link
 
 ## Notes
 - P4 cards are passive — need server airflow
-- P100 has active cooler but runs hot in tight spaces
+- P100 has active cooler
+- Z390 Aorus Elite desktop is DEAD — no GPUs there

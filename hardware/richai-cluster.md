@@ -25,7 +25,7 @@ Proxmox VE cluster formed between the main server (pve) and the DL360 Gen9 (pve2
 | Node ID | Name | IP | Hardware | 40G Link |
 |---------|------|----|----------|----------|
 | 1 | `pve` | 192.168.12.132 | Main Proxmox Server | 10.10.10.1/30 |
-| 2 | `pve2` | 192.168.12.50 | DL360 Gen9 | 10.10.10.2/30 |
+| 2 | `pve2` | 192.168.12.195 (WiFi) | DL360 Gen9 | 10.10.10.2/30 |
 
 ## 40G Interconnect
 
