@@ -1,27 +1,29 @@
 ---
 type: Server
 title: DL360 Gen9
-description: HPE DL360 Gen9 1U rack server — secondary Proxmox host with iLO 4 remote management.
-tags: [dl360, gen9, hpe, server, proxmox, ilo]
-timestamp: 2026-06-23T00:30:00Z
+description: HPE DL360 Gen9 1U rack server — secondary Proxmox host (pve2) with iLO 4 remote management. Proxmox VE installed and running.
+tags: [dl360, gen9, hpe, server, proxmox, ilo, pve2]
+timestamp: 2026-06-23T06:45:00Z
 ---
 
 # DL360 Gen9
 
-|| Status: iLO Configured — Proxmox Install Pending 🚧 |
+|| Status: Proxmox VE Installed & Running ✅ |
 
-The DL360 Gen9 is racked, powered on, and iLO 4 is configured for remote management. Proxmox VE 8 install pending via Ventoy USB.
+The DL360 Gen9 is racked, powered on, with Proxmox VE 8 running at 192.168.12.50. iLO 4 configured for remote management. Passwordless SSH access from main PVE host.
 
 ## Current Configuration
 
 - **Model:** HPE ProLiant DL360 Gen9 (1U rack)
 - **Hostname:** `pve2.lan`
-- **IP:** 192.168.12.50 (planned)
+- **IP:** 192.168.12.50/24 (vmbr0 via nic2)
+- **Gateway:** 192.168.12.1
+- **DNS:** 1.1.1.1
+- **Root Password:** `mcrart8794!`
 - **Role:** Secondary Proxmox node, to be clustered with main PVE
-- **Networking:** 40G interlink via Mellanox ConnectX-3 Pro (main PVE side installed and detected)
-- **OS:** Proxmox VE 8 (via Ventoy USB — install pending)
+- **OS:** Proxmox VE 8 (Trixie/Debian 13)
 - **Storage:** HP Smart Array P440ar — RAID logical drive created (strip 64K, read-ahead, write-back with BBU)
-- **Root Password:** Stored in GPG vault on main PVE
+- **Repos:** No-subscription enabled, enterprise repo disabled
 
 ## iLO 4 Configuration
 
@@ -35,17 +37,36 @@ The DL360 Gen9 is racked, powered on, and iLO 4 is configured for remote managem
 - **iLO Access:** Web GUI at https://192.168.12.100, SSH on port 22
 - **Connected To:** ASUS router (used as switch) — dedicated iLO port cabled
 
+## 40G Mellanox ConnectX-3 Pro
+
+Both servers have matching HP FlexibleLOM ConnectX-3 Pro cards:
+- **Main PVE:** `eno49d1` (altname enp4s0d1) — MAC 94:40:c9:7a:de:e2
+- **PVE2:** `nic4` (altname enp4s0d1) — MAC 94:40:c9:7e:a2:b2
+
+**Current Status:** Link down — no carrier detected on either side.
+
+**Issue:** The Mellanox cards have Port 1 in InfiniBand mode (polling) and Port 2 in Ethernet mode (disabled). The network interface maps to Port 2 which shows `phys_state: Disabled`.
+
+**Fix Attempted:**
+- Added `options mlx4_core port_type_array=2,2` to `/etc/modprobe.d/mlx4_core.conf` on both servers (forces both ports to Ethernet)
+- Module reloaded and confirmed `port_type_array=2,2` active
+- Port 1 still shows as InfiniBand in devlink, Port 2 shows Disabled
+- **Needs reboot** to see if the modprobe config takes full effect
+
+**Root Cause Hypothesis:** The HP-branded ConnectX-3 Pro FlexibleLOM firmware may lock port configuration, or the physical cable might need to be plugged into a specific port on the card bracket. May need `mlxconfig` (MFT tools) to change firmware-level port mode.
+
 ## To-Do
 
 1. ✅ Rack the server
 2. ✅ Connect power, networking, and iLO dedicated port
 3. ✅ Create logical drive on RAID controller
 4. ✅ Configure iLO 4 (dedicated port, DHCP, user accounts, DNS name)
-5. ◻ Boot from Ventoy USB, install Proxmox VE 8
-6. ◻ Configure IP on LAN (192.168.12.50)
-7. ◻ Post-install setup via SSH (Linda)
-8. ◻ Configure 40G networking between pve and pve2
-9. ◻ Cluster with main PVE
+5. ✅ Boot from Ventoy USB, install Proxmox VE 8
+6. ✅ Configure IP on LAN (192.168.12.50)
+7. ◻ Run `apt dist-upgrade` and reboot pve2
+8. ◻ Fix 40G Mellanox link (reboot with port_type_array=2,2; may need mlxconfig)
+9. ◻ Configure 40G networking between pve and pve2
+10. ◻ Cluster with main PVE
 
 ## Setup Lessons Learned
 
