@@ -35,6 +35,7 @@ This is an [Open Knowledge Format (OKF) v0.1](https://cloud.google.com/blog/prod
 - [Hermes Main](containers/hermes-main.md) — Default profile container
 
 ### Projects
+- [CAN Bus Reverse Engineering](projects/can-bus-reverse-engineering.md) — Emergency vehicle upfitting and signal mapping
 - [Voice Pipeline](projects/voice-pipeline.md) — STT → LLM → TTS pipeline
 - [CAN Commander](projects/can-commander.md) — CAN bus reverse engineering app
 - [Retro Games](projects/retro-games.md) — Android retro games app
