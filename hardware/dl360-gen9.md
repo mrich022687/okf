@@ -43,17 +43,16 @@ Both servers have matching HP FlexibleLOM ConnectX-3 Pro cards:
 - **Main PVE:** `eno49d1` (altname enp4s0d1) — MAC 94:40:c9:7a:de:e2
 - **PVE2:** `nic4` (altname enp4s0d1) — MAC 94:40:c9:7e:a2:b2
 
-**Current Status:** Link down — no carrier detected on either side.
+**Current Status:** ✅ **WORKING!** 40 Gbps link established.
 
-**Issue:** The Mellanox cards have Port 1 in InfiniBand mode (polling) and Port 2 in Ethernet mode (disabled). The network interface maps to Port 2 which shows `phys_state: Disabled`.
+**Solution:** The cable was plugged into the card's Port 1, which defaults to InfiniBand mode. The `mlx4_core` module parameter `port_type_array=2,2` (forces both ports to Ethernet) fixed it. The module needed to be reloaded with the parameter for it to take effect — modprobe.d config alone wasn't enough until reboot/module reload.
 
-**Fix Attempted:**
-- Added `options mlx4_core port_type_array=2,2` to `/etc/modprobe.d/mlx4_core.conf` on both servers (forces both ports to Ethernet)
-- Module reloaded and confirmed `port_type_array=2,2` active
-- Port 1 still shows as InfiniBand in devlink, Port 2 shows Disabled
-- **Needs reboot** to see if the modprobe config takes full effect
-
-**Root Cause Hypothesis:** The HP-branded ConnectX-3 Pro FlexibleLOM firmware may lock port configuration, or the physical cable might need to be plugged into a specific port on the card bracket. May need `mlxconfig` (MFT tools) to change firmware-level port mode.
+**Link details:**
+- Main PVE: **eno49d1** (Port 2) at 10.10.10.1/30, MTU 9000
+- PVE2: **enp4s0** (Port 1) at 10.10.10.2/30, MTU 9000
+- Speed: **40 Gbps** (40000baseCR4/Full), latency ~0.2ms
+- Connection: Direct cable between servers (no switch)
+- Config made permanent in `/etc/network/interfaces` on both sides
 
 ## To-Do
 
@@ -64,7 +63,7 @@ Both servers have matching HP FlexibleLOM ConnectX-3 Pro cards:
 5. ✅ Boot from Ventoy USB, install Proxmox VE 8
 6. ✅ Configure IP on LAN (192.168.12.50)
 7. ◻ Run `apt dist-upgrade` and reboot pve2
-8. ◻ Fix 40G Mellanox link (reboot with port_type_array=2,2; may need mlxconfig)
+8. ✅ Fix 40G Mellanox link — port_type_array=2,2, module reload, IPs configured
 9. ◻ Configure 40G networking between pve and pve2
 10. ◻ Cluster with main PVE
 

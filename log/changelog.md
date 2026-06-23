@@ -134,21 +134,22 @@ timestamp: 2026-06-21T18:15:00Z
 - `apt dist-upgrade` still running
 - OKF hardware doc fully updated
 
-### 40G Mellanox — Port Mode Issue
-- Both servers have HP FlexibleLOM ConnectX-3 Pro cards installed
-- Link down — no carrier on either side
-- **Root cause:** Port mapped to Ethernet (Port 2) shows `phys_state: Disabled`
-- Port 1 stuck in InfiniBand mode despite `port_type_array=2,2` module parameter
-- Added `options mlx4_core port_type_array=2,2` to `/etc/modprobe.d/mlx4_core.conf` on both servers
-- Suspect needs firmware-level config (mlxconfig/MFT tools) or specific port on card bracket
-- Linked directly between servers (no switch)
-- PVE2 updates and reboot pending
+### 40G Mellanox — ✅ FIXED! 40 Gbps Link Working
+- **Root cause:** Cable was plugged into Port 1 which defaults to InfiniBand mode
+- **Fix:** `mlx4_core` module parameter `port_type_array=2,2` forces both ports to Ethernet mode
+- Module had to be reloaded with the parameter — modprobe.d alone wasn't enough until reload
+- Link details:
+  - Main PVE: **eno49d1** (Port 2) @ 10.10.10.1/30, MTU 9000
+  - PVE2: **enp4s0** (Port 1) @ 10.10.10.2/30, MTU 9000
+  - Speed: **40 Gbps** (40000baseCR4/Full), latency ~0.2ms
+  - Direct cable between servers, no switch
+- Config made permanent in `/etc/network/interfaces` on both sides
 
 ### CT 106 (Hermes/Larry) — Tailscale TUN Fix
-- Tailscale stopped working: `/dev/net/tun` missing in LXC container
-- Fixed: added `lxc.cgroup2.devices.allow: c 10:200 rwm` and TUN mount to config
-- Container restarted, TUN device now present
-- Tailscale re-auth needed: https://login.tailscale.com/a/69e24140146df
+|- Tailscale stopped working: `/dev/net/tun` missing in LXC container
+|- Fixed: added `lxc.cgroup2.devices.allow: c 10:200 rwm` and TUN mount to config
+|- Container restarted, TUN device now present
+|- Tailscale re-auth needed: https://login.tailscale.com/a/69e24140146df
 
 ### Network & Infrastructure
 |- Tailscale tailnet management
