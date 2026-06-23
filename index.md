@@ -44,6 +44,7 @@ This is an [Open Knowledge Format (OKF) v0.1](https://cloud.google.com/blog/prod
 ### Config
 ### References
 - [Ford Upfitter Guides](references/ford-upfitter-guides.md) — Ford Super Duty wiring diagrams and upfitter documentation
+- [CAN Bus Reverse Engineering](references/can-bus-reverse-engineering.md) — Complete CAN bus workflow: OBDLink MX+, raw CAN streaming, TCP bridge, vehicle architectures (Ford/RAM HD), AT command reference, CAN Commander app
 
 - [Backups](config/backups.md) — Backup strategy and locations
 - [SSH Keys](config/ssh-keys.md) — Key management

@@ -242,3 +242,20 @@ timestamp: 2026-06-21T18:15:00Z
 - End-of-frame blunt cut wire colors for stop/turn/park/backup circuits
 - FDRS reconfiguration instructions for separate stop/turn or LED lamps
 - Updated index.md with References section linking to upfitter guides
+
+## 2026-06-23 — CAN Bus Reverse Engineering OKF Documentation
+
+- Created `references/can-bus-reverse-engineering.md` — comprehensive OKF document covering:
+  - Hardware inventory: OBDLink MX+ (STN2255 v5.12.4, dual-CAN), OBDX Pro VX (J2534), USB-to-CAN FD, ELM327 USB
+  - Live tested vehicle: 2024 Ford F-450/F-550 Super Duty (VIN 1FDUF4HN6REE99454), ATSP6 protocol confirmed
+  - Documented architectures: Ford Super Duty (HS-CAN1/2/3, MS-CAN, UFM) and RAM 4500/5500 HD (CAN-C, CAN-IHS, CAN-B, VSIM)
+  - Complete CAN bus architectures with wire colors, module locations, tap points
+  - OBDLink MX+ raw CAN streaming via ATMA — including the critical NO DATA re-entry pattern and non-blocking read loop
+  - Canonical ELM327 AT command sequence with exact byte-level responses from live testing
+  - STN2255 native commands for MS-CAN access (STP 54/55, STCFIG, STCMM) and Ford MS-CAN known gap
+  - TCP bridge over Tailscale: PowerShell bridge script, com2tcp.exe, Python bridge option
+  - CAN Commander Android App — 3 modes (OBDLink BT, USB2CAN local/remote), CanController interface, deployment via scp+su
+  - Bug history from live app testing: ATSPA0 timeout, ATS0 parser failure, blocking readLine hang, Bluetooth \r\n vs \r desync, fake BT device list
+  - Quick reference AT command table
+  - Ford upfitter guide cross-reference (BBLB pages 106-108)
+- Updated index.md with link to CAN bus reference in references section
