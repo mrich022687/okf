@@ -18,6 +18,20 @@ The primary server running Proxmox VE (7.0.6-2-pve) on a HP machine with ZFS tan
 - **40G Link:** 10.10.10.1/30 (Mellanox ConnectX-3 Pro -> pve2)
 - **SSH:** `root@192.168.12.132` (via `ssh pve`)
 
+## Power Supply
+
+### Current
+- **Type:** 2× HP 500W Platinum (720478-B21)
+- **Mode:** Redundant (2+0)
+- **Draw (idle):** ~210W total (PS1: 90W, PS2: 120W)
+- **Safe limit:** 500W (single PSU in redundancy)
+
+### Planned Upgrade
+- **Target:** 2× HPE 1200W Platinum (720480-B21) — ordered 2026-06-23 (~80/pair on eBay)
+- **Motivation:** Power 2× Tesla P100 (250W each) + 2× Tesla P4 (75W each) + system (~200W)
+- **Capacity after upgrade:** 2400W combined, 1200W redundant — sufficient for all GPUs
+- **Status:** Pending delivery and installation
+
 ## PCI Devices
 
 ## Memory
