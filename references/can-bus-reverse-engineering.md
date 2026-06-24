@@ -358,3 +358,281 @@ See also: `references/ford-upfitter-guides.md`
 - `references/ram-hd-can-bus.md` — Full RAM HD CAN bus architecture
 - `references/android-obd2-bridge.md` — Phone-based OBD2 bridge setup
 - `references/android-rooting-guide.md` — Moto G Play rooting procedure
+
+---
+
+## 10. CH340/CH341A ELM327 Clone on Android
+
+### Hardware
+- **Chip:** CH340C / CH341A (1a86:7523, bcdDevice 0x8134)
+- **ELM327 version:** v1.5 (clone)
+- **USB:** Bulk endpoint EP 0x02 (OUT), EP 0x82 (IN)
+- **Baud:** 38400 (ELM327 default)
+- **Power:** From OBD2 pin 16 (12V)
+
+### The Critical: Baud Rate Formula
+
+Standard Linux ch341.c driver formulas do NOT work for this chip on Android/libreusb. The correct formula comes from `usb-serial-for-android` (Ch34xSerialDriver.java):
+
+```python
+BAUDBASE_FACTOR = 1532620800
+DIVMAX = 3
+
+factor = BAUDBASE_FACTOR // baudrate  # 39912 for 38400
+divisor = DIVMAX
+
+while (factor > 0xfff0) and divisor > 0:
+    factor >>= 3
+    divisor -= 1
+
+factor = 0x10000 - factor              # 0x6418 for 38400
+divisor |= 0x0080                      # 0x83 for 38400
+
+# TWO control transfers (not one):
+val1 = ((factor & 0xff00) | divisor)   # 0x6483 for 38400
+val2 = (factor & 0xff)                 # 0x0018 for 38400
+
+control_transfer(0x40, 0x9A, 0x1312, val1)
+control_transfer(0x40, 0x9A, 0x0f2c, val2)
+```
+
+### Full Init Sequence from usb-serial-for-android
+
+```python
+# 1. Read version
+ctrl(h, 0xC0, 0x5F, 0, 0, b"\\x00\\x02")
+
+# 2. Init serial
+ctrl(h, 0x40, 0xA1, 0, 0)
+
+# 3. Set baud to 9600 (default)
+set_baud_ch34x(h, 9600)
+
+# 4. Check status
+ctrl(h, 0xC0, 0x95, 0x2518, 0, b"\\x00\\x02")
+
+# 5. Set line config (8N1, TX/RX enable)
+ctrl(h, 0x40, 0x9A, 0x2518, 0xC3)
+
+# 6. Check status  
+ctrl(h, 0xC0, 0x95, 0x0706, 0, b"\\x00\\x02")
+
+# 7. Write config
+ctrl(h, 0x40, 0xA1, 0x501F, 0xD90A)
+
+# 8. Set baud again
+set_baud_ch34x(h, 9600)
+
+# 9. Set DTR+RTS
+ctrl(h, 0x40, 0xA4, 0xFF ^ 0x60, 0)
+
+# 10. Final status check
+ctrl(h, 0xC0, 0x95, 0x0706, 0, b"\\x00\\x02")
+
+# 11. Switch to 38400 for ELM327
+set_baud_ch34x(h, 38400)
+```
+
+### ELM327 Commands — Confirmed Working
+
+| Command | Response | Notes |
+|---------|----------|-------|
+| `ATZ` | `ELM327 v1.5` | Soft reset, ~1s |
+| `ATRV` | `12.7V` | Battery voltage |
+| `ATDP` | `ISO 15765-4 (CAN 11/500)` | Auto-detected |
+| `ATSP 6` | `OK` | Force CAN protocol |
+| `0100` | `41 00 BF 9E A8 17` | Supported PIDs 01-20 |
+| `010C` | `41 0C 00 00` | RPM = 0 (engine off) |
+| `0105` | `41 05 40` | Coolant = 64-40 = 24°C |
+| `010D` | `41 0D 00` | Speed = 0 km/h |
+
+### USB Busy Issue on Android
+
+When AndrOBD or any app claims the USB device, libusb cannot claim the interface. Workaround:
+
+```bash
+# Unbind from kernel/usbfs
+su -c "echo -n 1-1:1.0 > /sys/bus/usb/drivers/usbfs/unbind"
+su -c "echo -n 1-1:1.1 > /sys/bus/usb/drivers/usbfs/unbind"
+# Then Python can claim via libusb
+```
+
+Note: Androids USB system may re-bind interface 1 automatically. Set before claiming.
+
+
+## 10. CH340/CH341A ELM327 Clone on Android
+
+### Hardware
+- **Chip:** CH340C / CH341A (1a86:7523, bcdDevice 0x8134)
+- **ELM327 version:** v1.5 (clone)
+- **USB:** Bulk endpoint EP 0x02 (OUT), EP 0x82 (IN)
+- **Baud:** 38400 (ELM327 default)
+- **Power:** From OBD2 pin 16 (12V)
+
+### The Critical: Baud Rate Formula
+
+Standard Linux ch341.c driver formulas do NOT work for this chip on Android/libreusb. The correct formula comes from `usb-serial-for-android` (Ch34xSerialDriver.java):
+
+```python
+BAUDBASE_FACTOR = 1532620800
+DIVMAX = 3
+
+factor = BAUDBASE_FACTOR // baudrate  # 39912 for 38400
+divisor = DIVMAX
+
+while (factor > 0xfff0) and divisor > 0:
+    factor >>= 3
+    divisor -= 1
+
+factor = 0x10000 - factor              # 0x6418 for 38400
+divisor |= 0x0080                      # 0x83 for 38400
+
+# TWO control transfers (not one):
+val1 = ((factor & 0xff00) | divisor)   # 0x6483 for 38400
+val2 = (factor & 0xff)                 # 0x0018 for 38400
+
+control_transfer(0x40, 0x9A, 0x1312, val1)   # wValue=0x1312, wIndex=val1
+control_transfer(0x40, 0x9A, 0x0f2c, val2)   # wValue=0x0f2c, wIndex=val2
+```
+
+### Full Init Sequence from usb-serial-for-android
+
+```python
+# 1. Read version / check state
+ctrl(h, 0xC0, 0x5F, 0, 0, b"\x00\x02")
+
+# 2. Init serial port
+ctrl(h, 0x40, 0xA1, 0, 0)
+
+# 3. Set baud to 9600 (factory default)
+set_baud_ch34x(h, 9600)
+
+# 4. Check status
+ctrl(h, 0xC0, 0x95, 0x2518, 0, b"\x00\x02")
+
+# 5. Set line config (8N1, TX/RX enable)
+ctrl(h, 0x40, 0x9A, 0x2518, 0xC3)
+
+# 6. Check status
+ctrl(h, 0xC0, 0x95, 0x0706, 0, b"\x00\x02")
+
+# 7. Write config
+ctrl(h, 0x40, 0xA1, 0x501F, 0xD90A)
+
+# 8. Set baud to 9600 again
+set_baud_ch34x(h, 9600)
+
+# 9. Set DTR+RTS control lines
+ctrl(h, 0x40, 0xA4, 0xFF ^ 0x60, 0)
+
+# 10. Final status check
+ctrl(h, 0xC0, 0x95, 0x0706, 0, b"\x00\x02")
+
+# 11. Switch to 38400 for ELM327
+set_baud_ch34x(h, 38400)
+```
+
+### ELM327 Commands — Confirmed Working on 2015 Ford E-450
+
+| Command | Response | Notes |
+|---------|----------|-------|
+| `ATZ` | `ELM327 v1.5` | Soft reset, ~1s |
+| `ATRV` | `12.7V` | Battery voltage (key on, engine off) |
+| `ATDP` | `ISO 15765-4 (CAN 11/500)` | Auto-detected protocol |
+| `ATSP 6` | `OK` | Force CAN protocol |
+| `0100` | `41 00 BF 9E A8 17` | Supported PIDs 01-20 |
+| `010C` | `41 0C 00 00` | RPM = 0 (engine off) |
+| `0105` | `41 05 40` | Coolant = 64-40 = 24 C |
+| `010D` | `41 0D 00` | Speed = 0 km/h |
+
+### USB Busy Issue on Android
+
+When AndrOBD or any app claims the USB device, libusb cannot claim the interface. Workaround:
+
+```bash
+# Unbind from kernel/usbfs
+su -c "echo -n 1-1:1.0 > /sys/bus/usb/drivers/usbfs/unbind"
+su -c "echo -n 1-1:1.1 > /sys/bus/usb/drivers/usbfs/unbind"
+# Then Python can claim via libusb
+```
+
+Note: Android's USB system may re-bind interface 1 automatically. Use `libusb_set_auto_detach_kernel_driver(handle, 1)` before claiming.
+
+---
+
+## 11. CANable 2 Clone on Android
+
+### Hardware
+- **Adapter:** CANable 2 firmware (RH02 clone, manufactured by Joining, sold as RH02 Plus)
+- **VID/PID:** 0x16d0 / 0x117e
+- **Product string:** "CANable2 b158aa7 github.com/normaldotcom/canable2.git"
+- **Firmware:** candleLight (gs_usb compatible)
+- **USB Interfaces:**
+  - IFACE 0: CDC-ACM (Class 0x02/0x02/0x01) — Serial control
+  - IFACE 1: CDC Data (Class 0x0A/0x00/0x00) — CAN data
+- **Endpoints:** EP 0x01 (BULK OUT), EP 0x81 (BULK IN), EP 0x82 (INT IN)
+
+### Status on Android
+- **Detected:** Yes — via termux-usb -l and sysfs
+- **Driver binding:** cdc_acm kernel module exists but will not auto-bind (VID/PID not in driver ID table)
+- **Manual bind:** Possible but unreliable — Android usbfs re-claims IFACE 1
+- **libusb access:** Can claim IFACE 0, IFACE 1 stays BUSY from usbfs even after unbind
+- **Recommended:** Use on proper Linux (Q1900M, laptop, or P4 VM) with SocketCAN
+
+### Best Use: SocketCAN on Linux
+
+```bash
+# Load gs_usb driver
+sudo modprobe can
+sudo modprobe can_raw
+sudo modprobe gs_usb
+
+# Bring up CAN interface
+sudo ip link set can0 up type can bitrate 500000
+
+# Log all traffic to file
+candump -l can0
+
+# Send test frame
+cansend can0 123#DEADBEEF
+
+# Monitor in real-time
+cansniffer can0
+
+# Wireshark for CAN analysis
+sudo wireshark -k -i can0
+```
+
+### Firmware Options
+- **Default:** candleLight (gs_usb) — full CAN FD support
+- **Alternative:** Flash to Lawicel SLCAN for serial protocol mode
+- **Flashing tool:** https://github.com/candle-usb/candleLight_fw
+
+---
+
+## 12. AndrOBD App Notes
+
+- **Package:** com.fr3ts0n.ecu.gui.androbd (F-Droid)
+- **Version:** V2.7.9 (versionCode 20709)
+- **Source:** https://github.com/fr3ts0n/AndrOBD
+- **USB serial library:** mik3y/usb-serial-for-android (Ch34xSerialDriver.java)
+- **Protocol:** Supports ELM327, STN11xx, and direct ISO-TP
+- **Vehicle profiles:** Includes CanProtFord class with Ford-specific CAN init
+- **Connection methods:** Bluetooth SPP, USB serial (CDC-ACM), TCP/IP
+- **BT pair PIN:** 1234 (for standard OBDLink adapters)
+- **Download:** https://f-droid.org/repo/com.fr3ts0n.ecu.gui.androbd_20709.apk
+
+---
+
+## 13. Scripts on Moto Root
+
+OBD2 Python scripts stored at `~/` in Termux on Moto Root:
+
+| Script | Purpose | Status |
+|--------|---------|--------|
+| `test_real_init.py` | Full CH34X init + ELM327 commands | Working |
+| `test_canable3.py` | CANable 2 via libusb (SLCAN) | IFACE 1 BUSY |
+| `obd_can.py` | CAN protocol test | Working after baud fix |
+| `test_libusb.py` | Basic libusb open/close test | Working as root |
+
+All Python scripts must be run as root via `su -c` for USB access.

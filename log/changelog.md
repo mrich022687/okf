@@ -259,3 +259,20 @@ timestamp: 2026-06-21T18:15:00Z
   - Quick reference AT command table
   - Ford upfitter guide cross-reference (BBLB pages 106-108)
 - Updated index.md with link to CAN bus reference in references section
+
+## 2026-06-24 — CH340 ELM327 v1.5 Clone + CANable 2 Testing on Moto Root
+
+- **CH340 ELM327 clone** — Confirmed working on Moto Root via libusb + Termux
+  - Key discovery: Correct baud formula from usb-serial-for-android (BAUDBASE_FACTOR=1532620800, 2 control transfers)
+  - ELM327 v1.5 detected at 38400 baud, all PID queries working
+  - Tested on 2015 Ford E-450 (ED-4): Protocol = ISO 15765-4 CAN 11/500
+  - Scripts saved to Termux home on Moto Root (~/test_real_init.py)
+  - Python scripts require su for USB access
+- **CANable 2 clone (RH02 Plus, branded Joining)** — Detected on Moto Root USB
+  - VID 0x16d0, PID 0x117e, firmware: candleLight (gs_usb compatible)
+  - CDC-ACM interfaces but Android usbfs prevents bulk data access
+  - Recommended for SocketCAN on proper Linux
+- **AndrOBD V2.7.9** — Installed from F-Droid for testing
+  - Works with CH340 via usb-serial-for-android library (correct baud handling)
+  - Also supports Bluetooth SPP for OBDLink MX+
+- **OKF updated:** reference doc (sections 10-13), project status, changelog
