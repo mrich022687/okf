@@ -45,6 +45,18 @@ The primary server running Proxmox VE (7.0.6-2-pve) on a HP machine with ZFS tan
 - **84:00.0** — NVIDIA Tesla P100 PCIe 16GB (GP100, 16GB)
 - **04:00.0** — Mellanox ConnectX-3 Pro (MT27520, 40GbE)
 
+## Smart Array P440ar
+
+- **Controller:** Slot 0 (Embedded)
+- **Firmware:** 1.34 (outdated — pve2 runs 6.06)
+- **Cache:** 2 GB BBWC (1.8 GB available)
+- **Battery/Capacitor:** Replaced 2026-06-23 — now OK
+- **Cache Ratio:** 10% Read / 90% Write
+- **Mode:** RAID 6
+- **Drives:** 4× 1.6T SAS connected
+- **Temp:** 43°C (controller) / 33°C (cache)
+
+
 ## Storage
 - **sda:** 136.7G — OS (LVM root + swap)
 - **sdb/sdc/sdd/sde:** 1.6T each — ZFS pool members (tank)
