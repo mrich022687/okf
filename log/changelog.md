@@ -324,3 +324,96 @@ timestamp: 2026-06-21T18:15:00Z
   - Remote starter signal capture workflow
 - **SSH access:** laptop (Ubuntu 192.168.12.240), laptop-windows (Win Tailscale 100.107.180.3)
 - **Boot rule:** Ubuntu for any CAN/OBD2 work, Windows not used for this
+
+## 2026-06-25 — CAN Work Migrated to Ubuntu Laptop + 2025 F-450 Testing
+
+### Hardware Environment Change
+- **CAN work platform moved** from Moto Root (Android/Termux/libusb) to Dell Inspiron 14 7435 Ubuntu 24.04 laptop
+- **Laptop details:** /tank/data/okf/hardware/laptop.md
+- **SSH alias:** laptop-ubuntu (192.168.12.240, user michael-rich)
+- **All CAN tools now run from laptop** — eliminates Android USB quirks and libusb IFACE BUSY issues
+
+### CH340 ELM327 Clone — Now on Ubuntu Laptop
+- **CH340** at /dev/ttyUSB0, 38400 baud, serial works natively via pyserial
+- **ELM327 v1.5** confirmed working: AT Z, AT I, AT RV, AT DP
+- **HS-CAN (500k):** Fully functional — AT MA captures live continuous traffic
+  - RPM 0, Coolant 44°C, Throttle 37%, Run Time 645s
+  - VIN decoded from HS-CAN: 1FDUF4HN6REE99454 (2025 Ford F-450)
+  - Periodic heartbeat frame at ID 0x59E observed
+- **MS-CAN (125k):** Clone detects bus but cannot decode properly
+  - AT DP returns "SAE J1939 (CAN 29/250)" — clone misinterpretation of 125k MS-CAN
+  - AT MA returns zero frames even with body module activity
+  - **Conclusion:** ELM327 clone chip cannot handle 125k MS-CAN natively
+
+### CANable2 on Ubuntu Laptop — SocketCAN Working
+- **CANable2** (RH02 clone) at /dev/ttyACM0, slcan mode
+- **Interface:** can0 at 500k (HS-CAN) via slcand -s8
+- **HS-CAN capture:** Successful candump of live traffic including VIN, heartbeat, periodic frames
+- **MS-CAN attempt:** Wires tapped to second CAN pair but no traffic detected
+  - Possible causes: poor wire contact, body modules asleep, GWM blocking at OBD2 port
+- **SavvyCAN AppImage:** Downloaded to /tmp/ but not yet executed
+
+### Ford Architecture Discoveries (2025 F-450)
+- **GWM (Gateway Module)** sits between OBD2 port and MS-CAN bus
+  - HS-CAN traffic passes through to OBD2 normally
+  - **MS-CAN traffic is filtered/blocked** at the OBD2 port — cannot see RFA, BCM, or body module frames directly from OBD2
+  - Confirmed: zero MS-CAN frames at OBD2 even with lock/unlock/remote start button presses
+- **RFA (Remote Function Actuator)** — suspected remote start module
+  - Likely on MS-CAN or a private CAN bus
+  - No frames observed on OBD2 MS-CAN pins during remote start attempts
+- **FORScan approach:** Uses AT PP 2C "Session" command to open GWM bridge
+  - STN2255/OBDLink MX+ chips support this — ELM327 clone does not
+- **Hood interlock:** Prevents engine start but module should still send CAN frames when remote start is requested
+
+### OBDLink MX+ Bluetooth — Attempted but Not Yet Paired
+- **MAC:** 00:04:3E:8A:E7:15
+- **Pair PIN:** 1234
+- **Ubuntu 24.04 bluetoothctl:** Device discovered but pairing fails
+  - BlueZ agent registration issue on Ubuntu 24.04
+  - Needs proper BT agent setup before pairing succeeds
+- **Key advantage:** MX+ supports AT PP 2C to open GWM bridge — essential for MS-CAN access at OBD2 port
+
+### Next Steps / Future Work
+1. **Fix OBDLink MX+ Bluetooth pairing** on Ubuntu — this is priority #1 for MS-CAN access
+2. **Use MX+ with AT PP 2C "Session"** to open GWM bridge and capture MS-CAN traffic at OBD2 port
+3. **Alternative: Wire tap CANable2 directly to RFA module wires** behind trim/glovebox
+4. **Run SavvyCAN** for signal analysis and decoding
+5. **Capture remote start signal sequence** on MS-CAN (or RFA private bus)
+
+## 2026-06-25 — CAN Work on 2025 Ford F-450 (Ubuntu Laptop Phase)
+
+### Platform Shift
+- **CAN work moved** from Moto Root (Android/Termux/libusb) to Dell Inspiron 14 7435 Ubuntu 24.04 laptop
+- SSH alias: laptop-ubuntu (michael-rich@192.168.12.240), documented in hardware/laptop.md
+- Eliminates Android libusb IFACE BUSY issues and USB re-binding problems
+
+### CH340 ELM327 v1.5 Clone on Ubuntu
+- Works natively with pyserial at 38400 baud - no special init needed
+- HS-CAN (500k): Fully functional - AT MA captures live traffic, all OBD2 PIDs readable
+- MS-CAN (125k): Clone detects bus pin change (AT DP shows J1939/250) but reads zero frames
+- **Conclusion:** ELM327 clone cannot handle 125k MS-CAN
+
+### CANable2 on Ubuntu with SocketCAN
+- /dev/ttyACM0, slcand mode, can0 at 500k
+- HS-CAN capture successful: VIN decoded, heartbeat frames, periodic traffic logged
+- MS-CAN attempted on OBD2 pins 3/11: zero traffic detected
+- SavvyCAN AppImage downloaded to /tmp/ but not yet run
+
+### Key Discovery: GWM Blocks MS-CAN at OBD2
+- 2025 Ford F-450 Gateway Module filters MS-CAN at the OBD2 port
+- FORScan uses AT PP 2C "Session" command to open the bridge
+- STN2255 (OBDLink MX+) supports this - ELM327 clones do not
+- Explains why zero MS-CAN frames captured despite button presses
+
+### OBDLink MX+ Bluetooth Pairing Attempt
+- MAC 00:04:3E:8A:E7:15 discovered but pairing fails
+- BlueZ agent registration issue on Ubuntu 24.04
+- **Priority for next session:** Fix pairing, then use AT PP 2C for MS-CAN access
+
+### Remote Start Signal Capture Attempt
+- Lock/unlock, door switches, remote start button - all produced zero MS-CAN frames
+- Adapter confirmed on MS-CAN pins (DP detection changed from HS-CAN to J1939)
+- **Need:** Open GWM session or direct RFA wire tap to see remote start CAN activity
+
+### VIN Confirmation
+- 1FDUF4HN6REE99454 decoded from HS-CAN traffic (2025 Ford F-450 gas engine)

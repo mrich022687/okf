@@ -636,3 +636,78 @@ OBD2 Python scripts stored at `~/` in Termux on Moto Root:
 | `test_libusb.py` | Basic libusb open/close test | Working as root |
 
 All Python scripts must be run as root via `su -c` for USB access.
+
+---
+
+## 14. Ubuntu Laptop CAN Work - 2025 Ford F-450
+
+### Platform
+
+- **Machine:** Dell Inspiron 14 7435, Ubuntu 24.04
+- **SSH:** michael-rich@192.168.12.240 (alias: laptop-ubuntu)
+- **Serial devices:** CH340 at /dev/ttyUSB0, CANable2 at /dev/ttyACM0
+- **Cable:** OBD2 to DB9 with 4 CAN pin breakout
+
+### CH340 ELM327 v1.5 Clone on Ubuntu
+
+Works natively with pyserial at 38400 baud. No special init needed (unlike Android libusb).
+
+| Command | Response | Notes |
+|---------|----------|-------|
+| AT Z | ELM327 v1.5 | Reset |
+| AT I | ELM327 v1.5 | Version |
+| AT RV | 12.1V | Battery voltage (key on) |
+| AT DP | ISO 15765-4 (CAN 11/500) | HS-CAN auto-detect |
+| AT SP A | OK (on MS-CAN) | Returns J1939 (CAN 29/250) on MS-CAN pins - clone misdetects 125k |
+| AT MA | Live frames (HS) / Empty (MS) | Works on HS-CAN, zero on MS-CAN |
+| 010C | 41 0C 00 00 | RPM = 0 |
+| 0105 | 41 05 40 | Coolant 44C |
+| 0902 | VIN string | VIN decoded |
+
+### CANable2 with SocketCAN
+
+```bash
+# SLCAN mode (default candleLight firmware in slcan mode)
+slcand -o -s4 -t hw -S 3000000 /dev/ttyACM0 can0
+ip link set can0 up
+
+# Or gs_usb mode (candleLight firmware)
+modprobe gs_usb
+ip link set can0 up type can bitrate 500000
+
+# Monitor
+candump can0
+cansniffer can0
+```
+
+Captured HS-CAN traffic includes VIN (multiple IDs), periodic heartbeats at 0x59E, and various power train frames.
+
+MS-CAN capture attempted with wires on second CAN pair (OBD2 pins 3/11) - no traffic detected. Possible causes: poor wire contact, GWM block, or modules asleep.
+
+### 2025 Ford F-450 CAN Architecture
+
+- **HS-CAN (500k):** Powertrain bus - accessible at OBD2 pins 6/14. ECU, TCM, ABS on this bus.
+- **MS-CAN (125k):** Body/comfort bus - accessible at OBD2 pins 3/11 but GWM filters.
+- **GWM (Gateway Module):** Routes messages between buses, blocks MS-CAN at OBD2 unless session opened.
+- **RFA (Remote Function Actuator):** Handles key fob, remote start, passive entry. Likely on MS-CAN or private bus.
+- **Hood interlock:** Prevents engine start but RFA should still transmit CAN frames on remote start request.
+
+### Approach for MS-CAN Access
+
+**Option A: OBDLink MX+ with AT PP 2C**
+1. Pair MX+ via Bluetooth
+2. Send AT PP 2C SV (Session command)
+3. GWM opens bridge, MS-CAN frames appear at OBD2
+4. Capture with candump or ELM327 AT MA
+
+**Option B: Direct Wire Tap**
+1. Locate RFA module (behind glovebox or passenger kick panel)
+2. Identify MS-CAN wire pair (twisted pair, CAN-H/CAN-L)
+3. Tap with CANable2 on separate SocketCAN interface
+
+### Remote Start Capture Notes
+
+- With key off: RFA should still send frames when remote start button pressed
+- Hood interlock prevents engine crank but CAN frames still transmit
+- GWM block prevents seeing these at OBD2 without session open
+- Once MS-CAN accessible, capture sequence: press remote start, log all frames, compare to baseline (no press)
