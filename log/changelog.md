@@ -276,3 +276,41 @@ timestamp: 2026-06-21T18:15:00Z
   - Works with CH340 via usb-serial-for-android library (correct baud handling)
   - Also supports Bluetooth SPP for OBDLink MX+
 - **OKF updated:** reference doc (sections 10-13), project status, changelog
+
+## 2026-06-24 (2nd session) — OBDLink MX+ CAN Monitor + PVE SPP Update + P100 Purchase
+
+### CAN / Remote Starter Project
+- **OBDLink MX+ Bluetooth** — Paired with Moto Root (MAC 00:04:3E:8A:E7:15, link key confirmed)
+- **CAN Commander app** (com.richai.cancommander) — Installed on Moto Root
+  - Streams raw CAN frames via AT MA mode — confirmed working on Ford E-450
+  - Custom app built by Linda — has Accessory 1/2 buttons for CAN injection
+  - No export/save feature — need Bluetooth terminal app for log capture
+- **CANable 2 (RH02)** — Still blocked by Android usbfs
+  - Plan: Move to Q1900M or WSL2 on 8200 for SocketCAN candump
+- **Next:** Capture remote starter signal sequence with Serial Bluetooth Terminal + AT MA mode
+
+### GPU Purchases
+- **2x Tesla P100 (16GB)** bought for $150 — arriving ~1 week
+  - 4 total P100s eventually (2 more incoming)
+- **Best config:** DL380 (2x P100 + 2x P4 = 48GB VRAM), DL360 (3x P4 = 24GB)
+  - P100s can't fit in 1U chassis (full-height, dual-slot)
+
+### PVE (DL380 Gen9) — HPE SPP Firmware Update
+- **SPP version:** Gen9SPPGen91 (2022_0822.4)
+- **Firmware before -> after:**
+  - BIOS: P89 2019 -> P89 2021 (same version, newer date)
+  - iLO4: 2.03 -> 2.81
+  - P440ar RAID: 1.34 -> 7.00
+  - NIC Broadcom 5719: v1.46
+- **iLO Advanced license** activated — virtual media now available
+- **iLO credentials:** michael / mcrart8794! — IP 192.168.12.126
+- **Cold boot required** for iLO Advanced features to activate
+- **POST notes:** SPP reset POST progress indicators - cosmetic only
+  - F1 prompt due to config change detection - clears on next clean boot
+- **All 7 drives healthy, all arrays OK, RAID battery OK**
+
+### Network Changes
+- **Q1900M internet** — Moved from PVE nic to PVE2 nic2 during PVE shutdown
+  - PVE2 vmbr0: nic3 (LAN) + nic2 (Q1900M) + nic4 (spare)
+  - Q1900M at 192.168.12.208 reachable at 0.3ms from PVE2
+  - Network switch arriving to eliminate direct cable juggling
