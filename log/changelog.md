@@ -314,3 +314,13 @@ timestamp: 2026-06-21T18:15:00Z
   - PVE2 vmbr0: nic3 (LAN) + nic2 (Q1900M) + nic4 (spare)
   - Q1900M at 192.168.12.208 reachable at 0.3ms from PVE2
   - Network switch arriving to eliminate direct cable juggling
+
+## 2026-06-25 — Dell Inspiron Laptop Documented in OKF
+
+- **New file:** hardware/laptop.md — Dell Inspiron dual-boot laptop documentation
+  - Ubuntu primary for CAN work (SocketCAN, gs_usb, can-utils)
+  - SSH config, Tailscale, LAN IPs documented
+  - Three-phase CAN test plan (CH340 -> MX+ -> CANable 2)
+  - Remote starter signal capture workflow
+- **SSH access:** laptop (Ubuntu 192.168.12.240), laptop-windows (Win Tailscale 100.107.180.3)
+- **Boot rule:** Ubuntu for any CAN/OBD2 work, Windows not used for this
