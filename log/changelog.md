@@ -387,6 +387,39 @@ timestamp: 2026-06-21T18:15:00Z
 - SSH alias: laptop-ubuntu (michael-rich@192.168.12.240), documented in hardware/laptop.md
 - Eliminates Android libusb IFACE BUSY issues and USB re-binding problems
 
+## 2026-06-26 — ZFS Disk Repair + Backup Automation + Storage Renaming
+
+### ZVOL Corruption Fix — VM 102 & VM 100
+- **VM 102 (Fedora):** dd'd corrupted ZVOL to new disk (100 GB, ~39 min). Old disk destroyed, new one renamed. Clean disk ready for Fedora install.
+- **VM 100 (Ubuntu Gnome):** dd'd corrupted 100 GB disk with 21 I/O errors (bad blocks zero-filled with conv=noerror,sync). New disk in place, VM running with P4 passthrough intact.
+- **VM 101 (Windows):** Skipped — June 21 backup exists on Q1900, no critical data needing recovery. License preserved on VM 201 (pve2).
+
+### VM Numbering Scheme Established
+- First digit = PVE node: main PVE = 10x, pve2 = 20x, pve3 = 30x, future pve4 = 40x
+- VM 201 created on pve2 as Windows backup with same SMBIOS UUID as VM 101
+
+### Shared ISO Store
+- NFS-exported `/tank/data/isos` to all 3 cluster nodes
+- 4 ISOs (Ubuntu, Kali, Fedora KDE + Workstation) accessible from every node
+- pve2 connects via 40G link (`isos-nfs-40g`), pve3 via LAN (`isos-nfs`)
+
+### Automated Nightly Backups
+- vzdump.cron configured — runs at 2 AM daily, all VMs 100-104, snapshot mode, zstd, keep-last=3
+- Targets Q1900 backup storage
+- Tested and verified working (CT 104 k3s backup: 3.2 GB → 657 MB in 43 sec)
+
+### Storage Renamed: ilo-\* → q1900-\*
+- `ilo-backups` → `q1900` — backup storage on Q1900
+- `ilo-isos` → `q1900-isos` — ISO share on Q1900
+- All references updated across fstab, storage.cfg, cron files, pve2, and pve3
+- No stray "ilo" references remain except actual HP iLO management interfaces
+
+### pve3 (Compaq 8200) Documented
+- Specs captured: i7-2600, 31 GB RAM, PCIe 2.0 x16 slot available for GPU
+- Added to OKF as hardware/compaq-8200.md (was previously listed as a Windows desktop)
+- Tesla P4 identified as best GPU option (75W slot-powered, needs fan mod for passive cooling)
+
+
 ### CH340 ELM327 v1.5 Clone on Ubuntu
 - Works natively with pyserial at 38400 baud - no special init needed
 - HS-CAN (500k): Fully functional - AT MA captures live traffic, all OBD2 PIDs readable

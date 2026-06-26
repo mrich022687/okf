@@ -81,11 +81,11 @@ The primary server running Proxmox VE (7.0.6-2-pve) on a HP machine with ZFS tan
 | 106 | **hermes (Larry)** | **Running** | **2C/4G — coder profile** |
 
 ## VMs
-| VMID | Name | Status | Spec |
-|------|------|--------|------|
-| 100 | ubuntu-gnome | Stopped | 6C/16G — voice pipeline host |
-| 101 | windows-11 | Running | 6C/16G — daily driver VM |
-| 102 | fedora | Stopped | 4C/4G |
+| VMID | Name | Status | Spec | Notes |
+|------|------|--------|------|-------|
+| 100 | ubuntu-gnome | Running | 6C/16G | Voice pipeline on P4s — disk fixed 06/26 |
+| 101 | windows-11 | Stopped | 6C/16G | License safe on VM 201 (pve2) — backup 06/21 on Q1900 |
+| 102 | fedora | Stopped | 4C/4G | Clean disk, needs fresh install |
 
 ## 40G Mellanox ConnectX-3 Pro
 - **PCI:** 04:00.0 — MT27520 Family

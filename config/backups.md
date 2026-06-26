@@ -1,34 +1,45 @@
 ---
 type: Config
 title: Backup Strategy
-description: Backup locations, schedules, and procedures for all critical systems.
-tags: [backup, strategy, recovery]
-timestamp: 2026-06-21T18:15:00Z
+description: Automated nightly backups to the Q1900. Snapshot mode, zstd compression, keeps last 3.
+tags: [backup, strategy, recovery, q1900]
+timestamp: 2026-06-26T12:00:00Z
 ---
 
 # Backup Strategy
 
-## Critical Backups
+## Backup Target: q1900 (192.168.12.208)
+- **Storage name:** `q1900` (NFS mount at `/mnt/q1900`)
+- **Server:** Q1900 at 192.168.12.208, share `/srv/backups`
+- **Capacity:** 457 GB total, ~251 GB free (40% used)
 
-### Container Backups
-| Source | Format | Location | Frequency |
-|--------|--------|----------|-----------|
-| CT 106 (Hermes coder) | vzdump LXC | `/tank/dump/dump/` on PVE | On-demand |
-| CT 106 (Hermes coder) | tar.zst copy | `/home/michael/` on Q1900M | On-demand |
-| Config files | tar.gz | `/srv/backups/` on Q1900M | Periodic |
+## Schedule
+- **When:** Nightly at 2:00 AM
+- **What:** VMs 100-104 (all VMs + containers)
+- **Mode:** Snapshot (zero downtime)
+- **Compression:** zstd
+- **Retention:** keep-last=3 (oldest auto-pruned)
 
-### Latest Backup
-- **File:** `vzdump-lxc-106-2026_06_21-16_33_34.tar.zst` (999M)
-- **Location:** PVE `/tank/dump/dump/` and Q1900M `/home/michael/hermes-ct106-backup.tar.zst`
-- **Date:** 2026-06-21
+## Stored in vzdump.cron (cluster-wide)
+```
+0 2 * * * root vzdump 100 101 102 103 104 --mode snapshot --compress zstd --storage q1900 --prune-backups keep-last=3
+```
 
-### VM Snapshots on PVE
-| VM | Snapshot | Date |
-|----|----------|------|
-| VM 100 (ubuntu-gnome) | pre-backup-20260615 | 2026-06-15 |
-| VM 101 (windows-11) | clean-install, pre-backup-20260615 | 2026-06-15 |
-| VM 102 (fedora) | pre-backup-20260615 | 2026-06-15 |
-| CT 106 (hermes) | hermes-golden | Pre-dates session |
+## Existing Backups (as of June 26)
 
-## USB Drives (Backup Targets)
-See [USB Drives](usb-drives.md) for current USB drive inventory.
+| VM/CT | Latest | Size |
+|-------|--------|------|
+| VM 100 (Ubuntu Gnome) | June 21 | 62 GB |
+| VM 101 (Windows 11) | June 21 | 25 GB |
+| VM 102 (Fedora) | June 15 | 3.5 GB |
+| VM 200 (OPNsense) | June 15 | 767 KB |
+| CT 103 (Website) | June 21 | 271 MB |
+| CT 104 (k3s) | June 21 | 386 MB |
+| CT 106 (Larry on pve2) | June 21 | 999 MB |
+
+## Notes
+- Storage was renamed from `ilo-backups` to `q1900` on 2026-06-26
+- All references updated across all 3 cluster nodes, fstab, and cron files
+- Old storage name `ilo-backups` fully removed — no confusing references remain
+- ISO share also renamed: `ilo-isos` → `q1900-isos`
+- No secondary backup target configured (Q1900 is single point of failure for backups)
