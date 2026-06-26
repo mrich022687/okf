@@ -121,3 +121,32 @@ Both servers have matching HP FlexibleLOM ConnectX-3 Pro cards:
 
 - Installation ISO on [Ventoy Multi-Boot USB](/config/ventoy-usb.md)
 - Main PVE server at [PVE Proxmox](/hardware/pve-proxmox.md)
+
+## Firmware Updates
+
+### SPP Update (2026-06-25)
+- **Status:** In progress — PVE2 booting from SPP Gen9 (2022_0822.4) ISO
+- **ISO location:** `/home/michael/Desktop/spp-gen9-2022.iso` on Q1900M (symlinked to `/srv/isos/`)
+- **Target:** PVE2 (DL360 Gen9) — this was the first time running SPP on this server
+
+### Critical Lesson: iLO Virtual Media Mounting
+
+After extensive testing, the **only reliable method** to mount an ISO via iLO4 virtual media is:
+
+**✅ WORKING METHOD — HPE iLO Application on Windows**
+1. Download the **HPE iLO Application** (formerly "HPE iLO Mobile Application" / "HP iLO Virtual Media") on a Windows machine
+2. Have the ISO file on the local Windows filesystem
+3. Open the HPE iLO Application, enter the iLO IP
+4. Use the **Virtual Media / Virtual Drive** feature within the app to mount the ISO
+5. Boot the server from virtual media — works every time
+
+**❌ UNRELIABLE METHODS (do not rely on these)**
+- **Browser URL mount (NFS):** iLO4 web UI "Virtual Media → URL" does not reliably accept NFS paths — picky parsing, inconsistent behavior
+- **Browser URL mount (HTTP):** Same issue — intermittent acceptance
+- **`file://` paths:** Will never work — iLO interprets file paths on its own embedded Linux, not the source machine
+- **Python HTTP server → iLO URL mount:** Partially works but inconsistent
+- **Remote Console Java applet:** Does not work on modern Linux (distributions removed Java plugin support)
+
+### Best Practice for Future Updates
+- Always use a **Windows laptop/desktop** with the **HPE iLO Application** installed
+- Keep the ISO file on the Windows machines local drive
