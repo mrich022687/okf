@@ -105,3 +105,17 @@ See [USB Drives](config/usb-drives.md) for current inventory.
 - [richai-cluster](hardware/richai-cluster.md)
 - [DL360 Gen9 / pve2](hardware/dl360-gen9.md)
 - [Network Topology](network/topology.md)
+
+
+## Firmware Updates
+
+### SPP Update (Executed 2026-06-24)
+- **SPP version:** Gen9SPPGen91 (2022_0822.4)
+- **Status:** Completed -- firmware updated (BIOS, iLO4, P440ar RAID, NIC)
+- **Method used:** iLO web UI virtual media (worked for PVE, but see note below)
+
+### Critical Lesson: iLO Virtual Media Mounting
+
+**The only reliable method** for mounting ISO images via iLO virtual media is the **HPE iLO Application on Windows**.
+
+See the [DL360 Gen9 documentation](dl360-gen9.md) under Firmware Updates for full details, including which methods work and which do not.

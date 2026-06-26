@@ -417,3 +417,41 @@ timestamp: 2026-06-21T18:15:00Z
 
 ### VIN Confirmation
 - 1FDUF4HN6REE99454 decoded from HS-CAN traffic (2025 Ford F-450 gas engine)
+
+## 2026-06-25 — Network Switch Upgrade + PVE2 SPP Update Start
+
+
+### Network Re-cabled: ASUS Router Replaced with TL-SG108 Switch
+- Old ASUS router (acting as switch) replaced with TP-Link TL-SG108 8-port gigabit switch
+- Loop Prevention enabled on switch
+- All devices now on single switch: PVE, PVE2, Q1900M, Compaq 8200, iLOs
+- Q1900M moved from PVE internal bridging to direct switch connection
+- Compaq 8200 got dedicated ethernet (previously limited)
+
+### PVE Network Config Changes
+- Added nic2 and nic3 to vmbr0 bridge -- any port on PVE gives network access now
+- Enabled STP on vmbr0 (prevents loops with multiple ports to switch)
+- Removed dead vmbr2 and vmbr3 bridges (192.168.1.10/24 subnet was unused)
+- Backed up old config before changes
+
+### PVE2 Network Fix
+- nic0 had link but was not in vmbr0 bridge -- added nic0 to bridge-ports
+- Added nic1 to bridge as well for future use
+- Enabled STP on vmbr0
+- Cluster returned to full quorum (2 nodes)
+
+### Full Network Test Results
+- All wired devices sub-millisecond latency (0.15-0.71 ms), 0% packet loss
+- Switch throughput: 945 Mbps (line-rate gigabit), zero retransmits
+- 40G interlink: 20 Gbps, zero retransmits
+- VM100 shows high latency (265ms) -- VM load issue, not cabling
+- Cables all good -- no replacements needed
+
+### PVE2 SPP Update Started
+- ISO: spp-gen9-2022.iso (4.3 GB) on Q1900M desktop
+- PVE2 booting from HPE SPP update ISO via iLO virtual media
+
+### Critical Discovery: iLO Virtual Media Mounting
+- Browser URL mounts (NFS/HTTP) and file:// paths are unreliable on iLO4
+- The HPE iLO Application on Windows is the ONLY reliable method
+- Documented in both dl360-gen9.md and pve-proxmox.md hardware docs

@@ -150,3 +150,35 @@ After extensive testing, the **only reliable method** to mount an ISO via iLO4 v
 ### Best Practice for Future Updates
 - Always use a **Windows laptop/desktop** with the **HPE iLO Application** installed
 - Keep the ISO file on the Windows machines local drive
+
+
+## Firmware Updates
+
+### SPP Update (2026-06-25)
+- **Status:** In progress -- PVE2 booting from SPP Gen9 (2022_0822.4) ISO
+- **ISO location:** /home/michael/Desktop/spp-gen9-2022.iso on Q1900M (symlinked to /srv/isos/)
+- **Target:** PVE2 (DL360 Gen9) -- first time running SPP on this server
+
+### Critical Lesson: iLO Virtual Media Mounting
+
+After extensive testing, the **only reliable method** to mount an ISO via iLO4 virtual media is:
+
+**WORKING METHOD: HPE iLO Application on Windows**
+1. Download the HPE iLO Application on a Windows machine
+2. Have the ISO file on the local Windows filesystem
+3. Open the app, enter the iLO IP, log in
+4. Use the Virtual Media / Virtual Drive feature to mount the ISO
+5. Boot the server from virtual media -- works every time
+
+**UNRELIABLE METHODS (do not rely on these):**
+- Browser URL mount (NFS): iLO4 web UI "Virtual Media to URL" does not reliably accept NFS paths
+- Browser URL mount (HTTP): Same issue -- intermittent acceptance
+- file:// paths: Will never work -- iLO interprets paths on its own embedded Linux
+- Python HTTP server to iLO URL mount: Partially works but inconsistent
+- Remote Console Java applet: Does not work on modern Linux
+
+### Best Practice for Future Updates
+- Always use a Windows laptop/desktop with the HPE iLO Application installed
+- Keep the ISO file on the Windows machine's local drive
+- Use the app to mount virtual media, then boot from it
+- Applies to ALL HPE Gen9/Gen10 servers with iLO4/iLO5
