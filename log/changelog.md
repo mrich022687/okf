@@ -16,6 +16,14 @@ timestamp: 2026-06-26T20:30:00Z
 - **Lesson:** Auxiliary fan headers on older SFF boards may default to low speed — always verify with load testing
 - **OKF:** Updated compaq-8200.md (full cooling section), gpu-setup.md (thermal performance table + critical fix note), changelog.md
 
+## 2026-06-27 — Ollama Models, GPU Dashboard, Amanda's HP Tablet
+
+- **Ollama (Main PVE):** deepseek-coder:6.7b pulled for code generation (3.8 GB)
+- **GPU Dashboard:** Web dashboard at http://192.168.12.132:8080 — systemd service gpu-dashboard.service showing all 5 GPUs. Terminal dashboard: gpu-dashboard.sh
+- **UFW:** Port 8080 opened for LAN (192.168.12.0/24) and Tailscale (100.64.0.0/10)
+- **Amanda's HP Pavilion x2:** Discovered at 192.168.12.232, running Linux Lite 7.0 (freezing). SSH access established (manderz user). Needs Lubuntu reinstall on internal storage (was accidentally installed on SD card)
+- **OKF:** GPU config updated with Ollama models and dashboard info. New hardware entry created for HP Pavilion x2.
+
 ## 2026-06-26 — pve3 GPU, Root Disk Fix, ZFS Cleanup, VM 101 Destroyed
 
 - **Root disk:** Extended from 56 GB → 128 GB (75% → 34% used), 72 GB of LVM space reclaimed

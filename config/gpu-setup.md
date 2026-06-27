@@ -1,9 +1,9 @@
-|---
+---
 type: Config
 title: GPU Configuration
 description: GPU allocation across the homelab. Current layout.
 tags: [gpu, nvidia, p4, p100, configuration]
-timestamp: 2026-06-26T21:15:00Z
+timestamp: 2026-06-27T21:00:00Z
 ---
 
 # GPU Configuration
@@ -16,7 +16,7 @@ timestamp: 2026-06-26T21:15:00Z
 | 2 | Tesla P100-16GB #2 | Main PVE (host) | ✅ | CT 103 + CT 104 LXC shared |
 | 3 | Tesla P4-8GB #1 | pve2 (DL360) | ✅ | CT 206 (Larry) LXC shared |
 | 4 | Tesla P4-8GB #2 | pve2 (DL360) | ✅ | CT 206 (Larry) LXC shared |
-| 5 | Tesla P4-8GB #3 | pve3 (Compaq 8200) | ✅ | Standalone (fresh install) |
+| 5 | Tesla P4-8GB #3 | pve3 (Compaq 8200) | ✅ | Standalone Ollama (llava:7b) |
 | 6 | Tesla P4-8GB #4 | Uninstalled (spare) | 📦 | Pending destination |
 
 **Total VRAM deployed:** 56 GB (plus 8 GB spare)
@@ -31,8 +31,33 @@ All GPUs are shared with LXC containers via NVIDIA device cgroup + library bind-
 |--------|-----------|------|
 | **Main PVE** | 2× P100-16GB | Heavy inference, vision, Ollama |
 | **pve2** | 2× P4-8GB | STT, embeddings, Larry (coding agent) |
-| **pve3** | 1× P4-8GB | Light inference, experimentation |
-| **Spare** | 1× P4-8GB | Available for future node (pve4 Cosmos sled?) |
+| **pve3** | 1× P4-8GB | Light inference, vision (llava:7b) |
+| **Spare** | 1× P4-8GB | Available for future node |
+
+## Ollama Models
+
+Ollama API accessible at `http://localhost:11434` (on each host) or via LAN at `http://192.168.12.132:11434` (main PVE) / `http://192.168.12.163:11434` (pve3).
+
+### Main PVE (2× P100)
+
+| Model | Size | VRAM Needs | Purpose |
+|-------|------|-----------|---------|
+| `llava:13b` | 8.0 GB | ~10-12 GB | Vision analysis (photos, documents) |
+| `deepseek-coder:6.7b` | 3.8 GB | ~4-6 GB | Code generation, autocomplete, Continue.dev |
+
+### pve3 (1× P4)
+
+| Model | Size | VRAM Needs | Purpose |
+|-------|------|-----------|---------|
+| `llava:7b` | 4.7 GB | ~5.5 GB | Lightweight vision (remote Ollama for Hermes vision) |
+
+## GPU Dashboard
+
+Two options for monitoring all 5 GPUs across the cluster:
+
+**Terminal:** Run `gpu-dashboard.sh` on main PVE. Shows all GPUs with temp/power/utilization/VRAM.
+
+**Web:** `http://192.168.12.132:8080` — systemd service `gpu-dashboard.service`, auto-starts on boot. UFW ports 8080 open for LAN (192.168.12.0/24) and Tailscale (100.64.0.0/10).
 
 ## Thermal Performance
 

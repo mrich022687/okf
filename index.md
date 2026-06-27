@@ -22,6 +22,7 @@ This is an [Open Knowledge Format (OKF) v0.1](https://cloud.google.com/blog/prod
 - [DL360 Gen9](hardware/dl360-gen9.md) — Secondary Proxmox host (pve2), clustered
 - [Z390](hardware/z390.md) — Main desktop (i9-9900K + P100)
 - [Compaq 8200 / pve3](hardware/compaq-8200.md) — Proxmox cluster node 3
+- [HP Pavilion x2](hardware/hp-pavilion-x2.md) — Amanda's tablet (Lubuntu)
 - [Q1900](hardware/q1900m.md) — Linux Mint / backup server / ISOs
 - [Moto Root](hardware/moto-root.md) — Rooted Android phone
 - [Moto G Power](hardware/moto-g-power.md) — Secondary Android phone
