@@ -3,7 +3,7 @@ type: Cluster
 title: richai-cluster
 description: Proxmox VE 3-node cluster — pve (DL380), pve2 (DL360), pve3 (Compaq 8200).
 tags: [proxmox, cluster, pve, pve2, pve3, corosync]
-timestamp: 2026-06-26T20:30:00Z
+timestamp: 2026-06-26T21:15:00Z
 ---
 
 # richai-cluster
@@ -26,7 +26,7 @@ Proxmox VE cluster with three nodes connected via TP-Link TL-SG108 switch.
 |---------|------|----|----------|------|
 | 1 | `pve` | 192.168.12.132 | DL380 Gen9 — ZFS tank (3×1.6TB), 2×P100 | Main |
 | 2 | `pve2` | 192.168.12.50 | DL360 Gen9 — 2×Tesla P4, CT 106 (Hermes) | GPU Compute |
-| 3 | `pve3` | 192.168.12.163 | Compaq 8200 — i7-2600, 30GB RAM, 168GB SSD | Light/Management |
+| 3 | `pve3` | 192.168.12.163 | Compaq 8200 — i7-2600, 30GB RAM, 168GB SSD, 1×Tesla P4 | Light Compute |
 
 ## Network
 
@@ -40,7 +40,7 @@ Proxmox VE cluster with three nodes connected via TP-Link TL-SG108 switch.
 
 - **PVE (DL380):** 2× Tesla P100 (32GB VRAM) — full-height, dual-slot
 - **PVE2 (DL360):** 2× Tesla P4 (16GB VRAM) — low-profile, single-slot, PCIe slot powered
-- **PVE3 (Compaq 8200):** TBD
+- **PVE3 (Compaq 8200):** 1× Tesla P4 (8GB VRAM) — CUDA 13.0, driver 580.167.08
 
 ## References
 

@@ -1,36 +1,47 @@
----
+|---
 type: Config
 title: GPU Configuration
-description: GPU allocation across the homelab. Current and planned layout.
+description: GPU allocation across the homelab. Current layout.
 tags: [gpu, nvidia, p4, p100, configuration]
-timestamp: 2026-06-26T12:00:00Z
+timestamp: 2026-06-26T21:15:00Z
 ---
 
 # GPU Configuration
 
-## Current Layout
+## Inventory
 
-| Card | Location | Status | Use |
-|------|----------|--------|-----|
-| Tesla P4 #1 (8GB) | Main PVE → VM100 | ✅ Running | STT (GPU 0) |
-| Tesla P4 #2 (8GB) | Main PVE → VM100 | ✅ Running | TTS (GPU 1) |
-| Tesla P100 (16GB) | Main PVE (host) | ⬜ Unassigned | Available |
-| Tesla P4 (8GB) | pve2 (DL360 Gen9) | ✅ Driver installed | Available for workloads |
+| # | Card | Location | Status | Use |
+|---|------|----------|--------|-----|
+| 1 | Tesla P100-16GB #1 | Main PVE (host) | ✅ | Ollama + vision inference |
+| 2 | Tesla P100-16GB #2 | Main PVE (host) | ✅ | CT 103 + CT 104 LXC shared |
+| 3 | Tesla P4-8GB #1 | pve2 (DL360) | ✅ | CT 206 (Larry) LXC shared |
+| 4 | Tesla P4-8GB #2 | pve2 (DL360) | ✅ | CT 206 (Larry) LXC shared |
+| 5 | Tesla P4-8GB #3 | pve3 (Compaq 8200) | ✅ | Standalone (fresh install) |
+| 6 | Tesla P4-8GB #4 | Uninstalled (spare) | 📦 | Pending destination |
 
-## Planned Layout (soon)
+**Total VRAM deployed:** 56 GB (plus 8 GB spare)
 
-| Server | GPUs | VRAM | Role |
-|--------|------|------|------|
-| **Main PVE** | 3× P100 | 48 GB | Heavy inference, training |
-| **pve2** | 3× P4 | 24 GB | STT, embeddings, smaller models |
-| **pve3** | Possible P4 | 8 GB | Light workloads (if added) |
+## GPU Sharing Model
 
-## P4 → pve2 Migration
-- Both P4s from main PVE moving to pve2 tonight (2026-06-26)
-- pve2 gets a 3rd P4 to total 3× P4
-- Main PVE gets all P100s instead
+All GPUs are shared with LXC containers via NVIDIA device cgroup + library bind-mounts — no VM passthrough. This allows flexible workload routing.
 
-## Storage Names Renamed (2026-06-26)
-- `ilo-backups` → `q1900`
-- `ilo-isos` → `q1900-isos`
-- All references cleaned across fstab, cron, and all 3 cluster nodes
+## Current Roles
+
+| Server | GPU Config | Role |
+|--------|-----------|------|
+| **Main PVE** | 2× P100-16GB | Heavy inference, vision, Ollama |
+| **pve2** | 2× P4-8GB | STT, embeddings, Larry (coding agent) |
+| **pve3** | 1× P4-8GB | Light inference, experimentation |
+| **Spare** | 1× P4-8GB | Available for future node (pve4 Cosmos sled?) |
+
+## Driver Versions
+
+| Node | Driver | Install Method | Notes |
+|------|--------|---------------|-------|
+| Main PVE | 580.167.08 | apt (Debian non-free) | Works with P100s |
+| pve2 | 580.167.08 | apt (Debian non-free) | Works with P4s |
+| pve3 | 580.167.08 | NVIDIA .run installer | APT pkgs conflicted on this kernel |
+
+## pve3 Driver Notes
+
+The Debian `nvidia-driver` 550.x was too old to build on Proxmox kernel 7.0.2-6-pve (GCC incompatibilities with removed kernel APIs). CUDA repo had version-mix APT conflicts. Solution: NVIDIA Tesla `.run` installer from `us.download.nvidia.com/tesla/580.167.08/`.
