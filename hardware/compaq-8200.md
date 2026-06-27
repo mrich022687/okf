@@ -1,48 +1,37 @@
 ---
 type: Server
-title: Compaq 8200 Elite SFF — pve3
-description: Proxmox node (pve3) in the richai-cluster. Small form factor, i7-2600, 31 GB RAM. Runs on integrated graphics — PCIe x16 slot available for GPU.
-tags: [proxmox, pve3, compaq, 8200, sff, cluster]
-timestamp: 2026-06-26T11:30:00Z
-resource: ssh://root@192.168.12.163
+title: HP Compaq 8200 Elite SFF — PVE3
+description: Third Proxmox cluster node, i7-2600, 30GB RAM, 168GB SSD.
+tags: [proxmox, pve3, compaq, sff]
+timestamp: 2026-06-26T20:30:00Z
 ---
 
-# Compaq 8200 Elite SFF — pve3
+# HP Compaq 8200 Elite SFF — pve3
 
-## Overview
-An HP Compaq 8200 Elite Small Form Factor running Proxmox VE. Third node in the richai-cluster (pve3).
+||| Status: ✅ Proxmox VE 9.2.2 — Cluster Node 3 |
 
-- **Hostname:** pve3
-- **Role:** Cluster Node 3 (richai-cluster)
-- **IP:** 192.168.12.163
-- **SSH:** `root@192.168.12.163`
+Third node in the richai-cluster. Acts as lightweight cluster member — can be used for management tasks, experiment VMs, or a single Tesla P4 if needed.
 
-## Hardware Specs
+## Specs
 
-| Component | Detail |
-|-----------|--------|
-| **CPU** | Intel Core i7-2600 @ 3.4 GHz (4C/8T, Sandy Bridge) |
-| **RAM** | 31 GB DDR3 |
-| **Boot Drive** | 180 GB Intel SSD (Proxmox root: 51 GB, 9% used) |
-| **Network** | Intel 82579LM Gigabit (vmbr0) |
-| **GPU** | Intel HD Graphics 2000 (integrated only) |
+- **CPU:** Intel Core i7-2600 @ 3.4GHz (4C/8T)
+- **RAM:** 30GB DDR3
+- **Storage:** 168GB SSD (ext4, non-ZFS)
+- **Network:** Onboard 1GbE → 192.168.12.163
+- **GPU:** None installed (possible P4 candidate)
 
-## PCIe Slots (all empty)
+## Setup
 
-| Slot | Type | Electrical Width | Usage |
-|------|------|-----------------|-------|
-| X16PCIEXP | PCIe 2.0 x16 | x16 from CPU | Best for GPU |
-| X4PCIEXP | PCIe 2.0 x4 | x4 | Add-on cards |
-| X1PCIEXP1 | PCIe 2.0 x1 | x1 | Low bandwidth |
-| PCI1 | Legacy PCI 32-bit | — | Old cards |
+- **OS:** Proxmox VE 9.2.2
+- **Hostname:** pve3.lan
+- **Storage:** `local` — ~46GB free after boot
+- **BIOS Settings:** VTx En, VTd En, DEP En, Intel TXT Dis
 
-## GPU Options
-The x16 slot can take a Tesla P4 (75W, 8GB VRAM, single-slot, no power cable needed). Would need a 40mm fan mod for active cooling since the P4 is passively cooled and SFF airflow is tight.
+## Cluster
 
-## Storage
-- Currently NFS-mounts ISOs from `q1900-isos` (Q1900) and `isos-nfs` (main PVE)
-- Has 44 GB free on root — room for a VM or two
-- Extra drive slot available internally for a SATA SSD/HDD
+- Joined `richai-cluster` via manual corosync key copy (June 25, 2026)
+- Quorate with 3 nodes
 
-## VM Numbering
-- Node 3 in cluster → VMs use 30x IDs (e.g., richai-web CT is 103, not affected by this)
+## References
+
+- [richai-cluster](/hardware/richai-cluster.md)
