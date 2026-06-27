@@ -8,8 +8,12 @@ timestamp: 2026-06-26T20:30:00Z
 
 # Changelog
 
-## 2026-06-26 — pve3 GPU Installed, OKF Synced
+## 2026-06-26 — pve3 GPU, Root Disk Fix, ZFS Cleanup, VM 101 Destroyed
 
+- **Root disk:** Extended from 56 GB → 128 GB (75% → 34% used), 72 GB of LVM space reclaimed
+- **ZFS pool tank:** Cleared 1,163 permanent errors — all 3 drives ONLINE, scrub running
+- **VM 101 (Windows 11):** Destroyed + cleaned up due to ZFS corruption. License preserved on VM 201 (pve2) — same SMBIOS UUID `74a66e32-d27c-4a5d-af1b-63d0fac6508d`
+- **iLO:** Diagnosed embedded NAND flash failure — "write-verify test failure" + "update nand failed". Fix: insert microSD card in internal slot
 - **pve3 (Compaq 8200):** Tesla P4-8GB fully operational — driver 580.167.08, CUDA 13.0
 - **pve3 GPU install:** BIOS integrated graphics enabled (DisplayPort output), GT 635 removed, NVIDIA .run installer used (APT repos failed due to kernel/driver version conflicts)
 - **pve3 persistence:** Systemd service created, auto-load configured, nouveau blacklisted
