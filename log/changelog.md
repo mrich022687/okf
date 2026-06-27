@@ -8,6 +8,14 @@ timestamp: 2026-06-26T20:30:00Z
 
 # Changelog
 
+## 2026-06-27 — pve3 P4 Fan Fix — 36°C Temp Drop
+
+- **pve3 cooling crisis discovered:** P4 blower fan on FAN2 header was running at idle speed while CPU fan header ran at 100%. P4 hit 88°C under load — only 3°C from throttle.
+- **Fix:** 3-way fan splitter connecting both CPU fan + P4 blower to the CPU fan header
+- **Results:** Peak temp dropped from **88°C → 52°C** (-36°C), idle from **36°C → 32°C**, throttle margin from 3°C → 39°C
+- **Lesson:** Auxiliary fan headers on older SFF boards may default to low speed — always verify with load testing
+- **OKF:** Updated compaq-8200.md (full cooling section), gpu-setup.md (thermal performance table + critical fix note), changelog.md
+
 ## 2026-06-26 — pve3 GPU, Root Disk Fix, ZFS Cleanup, VM 101 Destroyed
 
 - **Root disk:** Extended from 56 GB → 128 GB (75% → 34% used), 72 GB of LVM space reclaimed

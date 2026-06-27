@@ -34,6 +34,16 @@ All GPUs are shared with LXC containers via NVIDIA device cgroup + library bind-
 | **pve3** | 1× P4-8GB | Light inference, experimentation |
 | **Spare** | 1× P4-8GB | Available for future node (pve4 Cosmos sled?) |
 
+## Thermal Performance
+
+| Node | GPU | Idle Temp | Load Temp (sustained) | Cooling Method |
+|------|-----|:---------:|:--------------------:|---------------|
+| Main PVE | P100-16GB | ~35°C | ~75°C | Server chassis fans (2U rackmount) |
+| pve2 | P4-8GB ×2 | ~35°C | ~57°C | DL360 server fans (high CFM) |
+| **pve3** | **P4-8GB** | **32°C** | **52°C** | **Blower on CPU fan header (splitter)** |
+
+**⚠️ pve3 critical fix:** The P4 blower fan was originally on the FAN2 header (idle speed, 88°C peak). Moving it to the CPU fan header via a 3-way splitter dropped peak temps by **36°C** to **52°C**. See [compaq-8200.md](../hardware/compaq-8200.md#cooling--p4-blower-fan-fix) for full details.
+
 ## Driver Versions
 
 | Node | Driver | Install Method | Notes |

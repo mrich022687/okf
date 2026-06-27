@@ -33,6 +33,37 @@ The Tesla P4 was installed with integrated graphics as the primary display adapt
 5. **Auto-load:** Kernel modules configured in `/etc/modules-load.d/nvidia.conf`
 6. **Nouveau:** Blacklisted in `/etc/modprobe.d/blacklist-nouveau.conf`
 
+## Cooling — P4 Blower Fan Fix ⚠️
+
+### The Problem
+
+pve3 has a blower fan attached to the Tesla P4's heatsink via **FAN2** header. The BIOS was running this header at a low idle speed while the CPU fan header ran at full speed. This caused the P4 to hit **88°C** under sustained GPU load — only 3°C below thermal throttle (91°C), with only ~35W sustained power draw.
+
+### The Fix
+
+Used a **3-way fan splitter** to connect both the CPU heatsink fan AND the P4 blower fan to the **CPU fan header** (which runs at 100% in BIOS). Now both fans run at full speed simultaneously.
+
+### Before vs After — Stress Test Results (2026-06-27)
+
+| Metric | Before (FAN2) | After (CPU header splitter) | Improvement |
+|--------|:-------------:|:--------------------------:|:-----------:|
+| Idle temp | 36°C | 32°C | -4°C |
+| Peak temp (sustained) | **88°C** | **52°C** | **-36°C** |
+| Sustained power | ~35W | ~32W | — |
+| GPU utilization | 97-98% | 97-98% | Same |
+| Thermal throttle margin | **3°C** | **39°C** | ✅ Huge |
+| Cool-down | Slow | Rapid (drops ~1°C/sec after load) | ✅ |
+
+**Stress test method:** 30 sequential ollama llava:7b inferences + 8 rounds of 4× concurrent inferences = continuous 98% GPU util for ~5 minutes.
+
+### Lesson Learned
+
+On the Compaq 8200 (and likely many older SFF/Dell Optiplex/HP EliteDesk boards):
+- **CPU fan header** runs full BIOS speed (or PWM controlled)
+- **Auxiliary fan headers** (FAN2, FAN3, SYS_FAN) may default to idle/low speed
+- Always verify fan header speeds with a known load — don't assume all headers are equal
+- A simple fan splitter on the CPU header is the cheapest fix if you only need 2 fans
+
 ## Setup
 
 - **OS:** Proxmox VE 9.2.2
