@@ -16,6 +16,13 @@ timestamp: 2026-06-26T20:30:00Z
 - **Lesson:** Auxiliary fan headers on older SFF boards may default to low speed — always verify with load testing
 - **OKF:** Updated compaq-8200.md (full cooling section), gpu-setup.md (thermal performance table + critical fix note), changelog.md
 
+## 2026-06-28 — pve3 Security, NIC Fix, K3s Cleanup
+
+- **pve3 NIC:** PHY initialization glitch → corosync drops. Reset NIC, link stable since.
+- **pve3 UFW:** Installed + configured — SSH, Proxmox, Ollama, SPICE locked to LAN + Tailscale only. Fail2ban installed (5 attempts → 1h ban).
+- **K3s zombie pods:** Cleaned up 24 dead pods (20 metrics-scraper + 4 dashboard, ContainerStatusUnknown). Deployments scaled to 1 replica each.
+- **K3s** runs on PVE host (not CT 104).
+
 ## 2026-06-27 — Ollama Models, GPU Dashboard, Amanda's HP Tablet
 
 - **Ollama (Main PVE):** deepseek-coder:6.7b pulled for code generation (3.8 GB)
@@ -52,3 +59,15 @@ timestamp: 2026-06-26T20:30:00Z
 - All server NICs bridged to vmbr0 with STP
 
 [Earlier entries truncated for brevity]
+
+## 2026-06-28 — K3s Dashboard Cleanup (Larry)
+
+- **Zombie pods cleaned:** Scaled  and  to 1 replica. Deleted 24 dead pods (20 metrics-scraper + 4 dashboard, all ). Both deployments now 1/1 Running.
+- **Status:** Resolved. Linda's 🔴 note actioned.
+
+## 2026-06-28 -- K3s Dashboard Cleanup (Larry)
+
+- Zombie pods cleaned: Scaled kubernetes-dashboard and dashboard-metrics-scraper to 1 replica.
+  Deleted 24 dead pods (20 metrics-scraper + 4 dashboard, all ContainerStatusUnknown).
+  Both deployments now 1/1 Running.
+- Status: Resolved. Lindas red note actioned.
