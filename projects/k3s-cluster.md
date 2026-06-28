@@ -9,14 +9,17 @@ timestamp: 2026-06-23T00:00:00Z
 # K3s Cluster
 
 ## Current Status
-- **Server:** CT 104 (pve) — currently stopped
+- **Server:** Main PVE host (192.168.12.132), NOT CT 104
 - **API:** pve:6443 (HTTPS)
 - **Network:** Flannel CNI on 10.42.0.0/16
+- **CPU impact:** Constant ~11% CPU baseline on main PVE from K3s server process
+- **⚠️ Issue:** 14+ zombie dashboard pods causing scheduler churn — see changelog
 
 ## Nodes
-| Node | CT/VM | Status | Spec |
-|------|-------|--------|------|
-| k3s-server | CT 104 | Stopped | 2C/8G |
+| Node | Location | Status | Spec |
+|------|----------|--------|------|
+| k3s-server | Main PVE host | Running | (direct host install) |
+| kubernetes-dashboard | Host | Degraded | 15 pod replicas, 14 dead |
 | (workers) | — | — | Not yet provisioned |
 
 ## Notes
