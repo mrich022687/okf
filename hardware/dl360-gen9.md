@@ -24,9 +24,16 @@ The DL360 Gen9 is racked, powered on, with **Proxmox VE 9.2** running at **192.1
 - **CPU 2:** Intel Xeon E5-2690 v4 @ 2.60GHz (14C/28T)
 - **Total cores/threads:** 28C / 56T
 
-### Memory
-- **Current:** 64 GB (4× 16GB DDR4-2133 ECC RDIMMs)
-- **Channels in use:** 2 of 4 per CPU (slots PROC* DIMM 9, 12 — suboptimal)
+## Memory
+- **Total:** 64 GB (4× 16GB DDR4 ECC RDIMMs)
+- **Current population:** 2 DIMMs per CPU in slots 9 and 12
+- **Note:** Lid label confirms slots 9 & 12 as correct, though HP recommended first-populate slots are 1-4
+- **Target:** 128 GB (add another 4× 16 GB — 2 sticks arrived Jun 29, 2 more pending)
+
+### RAM Upgrade Plan
+- **Purchased:** 2× 16 GB Micron DDR4 (arrived Jun 29)
+- **Awaiting:** 1 more set (2× 16 GB) to match main PVE's 128 GB
+- **Installation:** Wait for full set — install all 4 at once in balanced configuration (slots 1, 4, 9, 12 per CPU)
 - **Planned:** 128 GB after adding 4 more 16GB sticks
 - **Target layout:** 8× 16GB in DIMM 1-8 per CPU (all 4 channels active)
 
@@ -36,8 +43,9 @@ The DL360 Gen9 is racked, powered on, with **Proxmox VE 9.2** running at **192.1
 - **Gateway:** 192.168.12.1
 - **DNS:** 1.1.1.1 (persistent in /etc/network/interfaces)
 - **Root Password:** `mcrart8794!`
-- **Role:** Secondary Proxmox node, **clustered** with main PVE via `richai-cluster`
-- **OS:** Proxmox VE **9.2** (Trixie/Debian 13) — fully updated ✅
+|| **Role:** Secondary Proxmox node, **clustered** with main PVE via `richai-cluster`
+|| **OS:** Proxmox VE **9.2** (Trixie/Debian 13) — fully updated ✅
+|| **Key VMs:** VM 201 (Windows 11 Pro — see [docs](containers/vm201-windows11.md)), CT 206 (Larry coding agent)
 - **Storage Controller:** HP Smart Array P440ar
 - **Repos:** No-subscription enabled, enterprise repo disabled
 

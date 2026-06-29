@@ -8,6 +8,18 @@ timestamp: 2026-06-26T20:30:00Z
 
 # Changelog
 
+## 2026-06-28 — VM 201 Windows 11 — Complete Debloat & Recovery Documentation
+
+- **VM 201 fully documented:** Created `/tank/data/okf/containers/vm201-windows11.md` with complete issue log (10 documented issues with root causes + fixes), debloat checklist, SSH config, performance tweaks, and VM config reference
+- **Xbox obliterated:** Services `XblAuthManager`, `XblGameSave`, `XboxNetApiSvc`, `XboxGipSvc` all disabled. App packages removed. Provisioning packages removed to block reinstall
+- **Network recovery:** QEMU `device_del` destroyed the NIC — recreated with new MAC `AE:61:5A:19:EB:75`, VirtIO drivers installed manually, DHCP lease stabilized at 192.168.12.234
+- **OpenSSH saga:** DISM hung (RAM starvation). MSI install worked but service vanished after reboot. Final fix: DISM reinstall + manual `sc.exe create sshd` + `ssh-keygen -A` + firewall rule
+- **RAM tuning:** Started at 16 GB (pegged at 100%), temporarily bumped to 32 GB for DISM ops, settled at 8 GB balloon (idle ~3 GB)
+- **Debloat round 2:** Windows Search, SysMain, Game Mode, visual effects, Cortana, telemetry, advertising ID all disabled. Performance power plan set
+- **SSH access:** Running on port 22 with password `Win11pve2`. QEMU guest agent for emergency access
+- **Backup:** VM 201 added to nightly vzdump cron (snapshot mode, zstd, keep-last=3, to Q1900)
+- **Index updated:** New VM 201 section added to OKF index.md. Backups.md updated with VM 201 info
+
 ## 2026-06-27 — pve3 P4 Fan Fix — 36°C Temp Drop
 
 - **pve3 cooling crisis discovered:** P4 blower fan on FAN2 header was running at idle speed while CPU fan header ran at 100%. P4 hit 88°C under load — only 3°C from throttle.
@@ -71,3 +83,25 @@ timestamp: 2026-06-26T20:30:00Z
   Deleted 24 dead pods (20 metrics-scraper + 4 dashboard, all ContainerStatusUnknown).
   Both deployments now 1/1 Running.
 - Status: Resolved. Lindas red note actioned.
+
+## 2026-06-29 — PVE Crash Diagnosis, Android Library, Backup Monitor, Infrastructure Fixes
+
+- **PVE Crash:** Main server (pve) crashed at 16:46 MDT — hardware watchdog triggered hard reset
+- **Diagnosis:** watchdog-mux.service killed (SIGKILL) then software watchdog timeout then reset
+- **Root cause identified:** BIOS firmware bug (corrupted PMU registers) + NVIDIA driver 580 incompatible with P100s
+- **Linda and Larry** independently confirmed same diagnosis — fix plan in pve-proxmox.md
+- **Hermes re-located:** Documentation corrected — Larry is CT 206 on pve2, NOT CT 106 on pve (migrated previously, docs were stale)
+- **Independence confirmed:** Hermes stays up when pve goes down — separate physical host (pve2/DL360 Gen9)
+- **Business dossier:** Complete RichAI Business Dossier created — infrastructure map, 6-division structure, success stories, funding research, file system organization
+- **Research complete:** 4 parallel research agents finished — company structures, success stories, funding options, file organization
+- **K3s stale nodes removed:** Cleaned 4 NotReady nodes (compaq-8200, inspiron-14, z390, ubuntu-gnome) from cluster — stopped etcd reconciliation churn
+- **NFS mounts fixed:** All 3 servers now use `soft` mounts for Q1900 (was `hard` — causes D-state hangs)
+- **Android Tools Library:** Created on Q1900 at `/srv/backups/Android tools and software/` — GammaOS (6.5 GB), ADB tools, Unisoc drivers
+- **GammaOS firmware:** Downloaded, extracted, staged to both Q1900 (permanent) and laptop (working directory C:\Users\mrich\RG505_GammaOS\)
+- **RG505 ROM cleanup:** Deleted 50 duplicate PSP games (44 GB freed), flattened SNES/GB subdirectories, organized hacks folder
+- **Q1900 credentials saved** to vault under `Q1900-NAS-iLO`
+- **Backup monitor setup:** Twice-daily script (6 AM / 6 PM) checks all backups are current, reports to Telegram
+- **RAM upgrade:** 2× 16 GB Micron DDR4 arrived for pve2 — waiting for other pair to install all 4 at once
+- **DIMM audits:** Verified main PVE slots are correct per HP spec; pve2 slots confirmed against lid label
+- **Q1900 headless conversion planned:** Strip Linux Mint GUI to save ~3 GB RAM
+- **OKF docs updated:** pve-proxmox.md (crash analysis + handoff), rg505.md (new), android-tools.md (new), q1900m.md (headless plan), dl360-gen9.md (RAM plan), backups.md (monitor + NFS fix), index.md (new pages), changelog (this entry)
