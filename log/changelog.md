@@ -105,3 +105,29 @@ timestamp: 2026-06-26T20:30:00Z
 - **DIMM audits:** Verified main PVE slots are correct per HP spec; pve2 slots confirmed against lid label
 - **Q1900 headless conversion planned:** Strip Linux Mint GUI to save ~3 GB RAM
 - **OKF docs updated:** pve-proxmox.md (crash analysis + handoff), rg505.md (new), android-tools.md (new), q1900m.md (headless plan), dl360-gen9.md (RAM plan), backups.md (monitor + NFS fix), index.md (new pages), changelog (this entry)
+
+## 2026-06-29 — LarryChat v3 Rebuild & Agent Pipeline
+
+### LarryChat
+- **Server v3:** Complete backend rewrite — 340-line FastAPI server (`server_v3.py`) replacing Flask v2
+- **New endpoints:** `/api/agent/send`, `/api/agent/pending`, `/api/voice/send`, `/api/voice/{file}`
+- **WebSocket:** Proper per-conversation broadcast — messages pushed to ALL connected clients in real-time
+- **Agent API:** Separate auth (agent keys vs session tokens), dedicated send endpoint
+- **Voice:** Record-then-send Opus messages (streaming deferred until VM100 is up)
+- **Read receipts:** Messages marked read on fetch, double-checkmark UI
+- **Database:** New `chat_v3.db` with WAL mode, conversations table with participants
+- **Android app:** Complete Kotlin/Compose rebuild — 16MB APK deployed to Moto Root
+  - Material 3 design, conversation list with badges, real-time WebSocket
+  - Voice recording (MediaRecorder → Opus), settings toggle
+- **Agent cronjob:** Hermes-managed `c036be54be4b` — polls every 60s, auto-responds
+  - **Bug fixed:** Prompt was re-running fetch script (consuming messages silently). Now uses injected script output.
+
+### Hermes Configuration
+- **Model:** `deepseek-v4-pro` for coding session; switched to `deepseek-v4-flash` after to conserve tokens
+- **Cronjob cleanup:** Removed stale pollers (84c96118fced, c66e184d8061); paused agent responder (c036be54be4b)
+- **Shutdown:** LarryChat server stopped + disabled on pve; agent cronjob paused to conserve resources
+
+### Knowledge Base
+- Created `projects/larrychat.md` — full architecture, API docs, shutdown procedure
+- Created `index.md` — master KB index with all links
+- Updated `log/changelog.md` — this entry
