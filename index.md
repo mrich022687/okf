@@ -11,11 +11,13 @@ timestamp: 2026-06-30T04:00:00Z
 ## Projects
 
 - [LarryChat](projects/larrychat.md) — Self-hosted team chat with AI agents
+- [Game Streaming](projects/game-streaming.md) — Sunshine/Moonlight, PS2 emulation, disc ripping
 
 ## Hardware
 
 - [RichAI Cluster](hardware/richai-cluster.md) — 3-node Proxmox cluster
-- [Compaq 8200](hardware/compaq-8200.md) — PVE3 node
+- [Compaq 8200 / pve3](hardware/compaq-8200.md) — Proxmox node + gaming host (Tesla P4)
+- [RG505](hardware/rg505.md) — Anbernic handheld, GammaOS, Moonlight client
 
 ## Logs
 

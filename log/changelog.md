@@ -8,6 +8,18 @@ timestamp: 2026-06-26T20:30:00Z
 
 # Changelog
 
+## 2026-06-30 — Game Streaming Setup — pve3 Sunshine/Moonlight + PS2 Ripping
+
+- **PS2 Game Library:** Ripped 7 PS2 discs to pve3 `/games/PS2/` — Top Gun Combat Zones (579 MB), Gran Turismo 3 (3.7 GB), Gran Turismo 4 (5.0 GB), Sonic Mega Collection Plus (4.4 GB), Pirates of the Caribbean (1.3 GB), Avatar: The Last Airbender (1.6 GB), Crash of the Titans (3.1 GB). Total ~20 GB.
+- **pve3 storage:** Created 80 GB ext4 logical volume at `/games` from thin pool (55 GB free)
+- **Sunshine installed:** Downloaded + installed LizardByte Sunshine `.deb` on pve3 (Debian Trixie). Service at `/etc/systemd/system/sunshine.service`. Web UI at https://192.168.12.163:47990
+- **Emulators:** Installed PCSX2 v2.6.3 + Dolphin Emulator via Flatpak (Flathub)
+- **Headless GPU setup:** Xvfb virtual display :99 at 1920x1080. KMS capture requires `nvidia-drm.modeset=1` (persisted at `/etc/modprobe.d/nvidia-drm-modeset.conf`). Xorg headless fallback config at `/etc/X11/xorg.conf.sunshine`
+- **UFW:** Opened TCP 47984/47989/47990/48010 + UDP 47998-48010 for Sunshine (LAN-only)
+- **RG505:** Moonlight `com.limelight.root` installed via ADB. RTSP handshake working. Video stream being debugged — KMS virtual connector frame capture issue
+- **Pitfalls:** TCP 48010 initially missing from UFW. Tesla P4 AV1 not supported. Xvfb alone can't provide Vulkan surfaces. Prebuilt Sunshine lacks NvFBC
+- **OKF:** Created `projects/game-streaming.md` (full setup doc), updated `hardware/compaq-8200.md` (gaming services section), updated `hardware/rg505.md` (Moonlight), updated changelog.md
+
 ## 2026-06-28 — VM 201 Windows 11 — Complete Debloat & Recovery Documentation
 
 - **VM 201 fully documented:** Created `/tank/data/okf/containers/vm201-windows11.md` with complete issue log (10 documented issues with root causes + fixes), debloat checklist, SSH config, performance tweaks, and VM config reference

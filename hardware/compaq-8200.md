@@ -76,6 +76,50 @@ On the Compaq 8200 (and likely many older SFF/Dell Optiplex/HP EliteDesk boards)
 - Joined `richai-cluster` via manual corosync key copy (June 25, 2026)
 - Quorate with 3 nodes
 
+## Gaming Services
+
+Sunshine game streaming host + PCSX2/Dolphin emulators for Moonlight clients (like the RG505).
+
+### Storage
+
+- **LV:** `/games` — 80 GB ext4 on thin pool (88 GB total)
+- **Game library:** `/games/PS2/` — 7 PS2 ISOs, ~20 GB used, 55 GB free
+- **Mount:** systemd mount at `/etc/systemd/system/games.mount`
+
+### Services Running
+
+| Service | Port | Detail |
+|---------|------|--------|
+| Sunshine | TCP 47984, 47989, 47990, 48010 | Game streaming host |
+| Sunshine | UDP 47998-48010 | Video/audio stream data |
+| Ollama | TCP 11434 | LLM inference |
+| Xvfb | :99 | Virtual framebuffer 1920x1080 for Sunshine |
+
+### GPU Streaming Config
+
+- **Encoder:** h264_vulkan + hevc_vulkan (Tesla P4)
+- **Capture:** KMS (requires `nvidia-drm.modeset=1`)
+- **Kernel param:** `/etc/modprobe.d/nvidia-drm-modeset.conf` — `options nvidia_drm modeset=1`
+
+### Emulators
+
+| Emulator | Type | Flatpak |
+|----------|------|---------|
+| PCSX2 v2.6.3 | PS2 | `net.pcsx2.PCSX2` |
+| Dolphin | GC/Wii | `org.DolphinEmu.dolphin-emu` |
+
+### UFW Rules
+
+All ports locked to `192.168.12.0/24`:
+- TCP: 47984, 47989, 47990, 48010 (Sunshine)
+- UDP: 47998-48010 (Sunshine streaming)
+
+### Known Issues
+
+- **Headless Tesla P4 + KMS:** Modeset=1 required for KMS capture. Virtual connector may not produce frames — Xorg headless config at `/etc/X11/xorg.conf.sunshine` as fallback
+- **Xvfb only works for X11 apps** — can't provide Vulkan surfaces for capture
+
 ## References
 
+- [Game Streaming](/projects/game-streaming.md)
 - [richai-cluster](/hardware/richai-cluster.md)
