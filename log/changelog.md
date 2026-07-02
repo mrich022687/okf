@@ -143,3 +143,16 @@ timestamp: 2026-06-26T20:30:00Z
 - Created `projects/larrychat.md` — full architecture, API docs, shutdown procedure
 - Created `index.md` — master KB index with all links
 - Updated `log/changelog.md` — this entry
+
+
+## 2026-07-01 — RG505 Game Streaming Setup (with Linda)
+
+### RG505
+- GammaOS Android 14 confirmed working on Anbernic RG505
+- Tailscale installed: hostname `rg505`, IP 100.94.30.106
+- Wireless debugging enabled and tested via ADB from PVE (paired + connected)
+- First game ripped: Top Gun: Combat Zones (PS2 CD-ROM, 579MB, verified complete)
+- Moonlight client pending installation
+
+### Hardware docs
+- Created `hardware/rg505.md` — full specs, ADB details, streaming setup status
